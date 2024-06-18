@@ -6,6 +6,7 @@ import Layout from "./layout/layout.tsx";
 import { GlobalStyle } from "./style/global.ts";
 import Weekly from "./pages/Weekly.tsx";
 import Daily from "./pages/Daily.tsx";
+import Login from "./pages/Login.tsx";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <Home />
+      </Layout>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <Layout>
+        <Login />
       </Layout>
     ),
   },

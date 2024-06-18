@@ -10,7 +10,6 @@ export type Props = {
 
 export default function SideHeader({ isOpen, setIsOpen }: Props) {
   const location = useLocation();
-  console.log(location);
 
   return (
     <SideHeaderStyle $isOpen={isOpen}>
