@@ -7,6 +7,7 @@ import { GlobalStyle } from "./style/global.ts";
 import Weekly from "./pages/Weekly.tsx";
 import Daily from "./pages/Daily.tsx";
 import Login from "./pages/Login.tsx";
+import ToastContainer from "./components/ToastContainer.tsx";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <RouterProvider router={router} />
+      <ToastContainer />
     </ThemeProvider>
   );
 }

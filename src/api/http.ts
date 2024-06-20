@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { getToken } from "../store/AuthStore";
 
 const BASE_URL = "http://localhost:8888";
 const DEFAULT_TIMEOUT = 1000;
@@ -9,6 +10,7 @@ const createClient = (config?: AxiosRequestConfig) => {
     timeout: DEFAULT_TIMEOUT,
     headers: {
       "content-type": "application/json",
+      Authorization: getToken() ? getToken() : "",
     },
     withCredentials: true,
     ...config,
