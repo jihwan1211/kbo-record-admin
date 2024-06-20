@@ -1,4 +1,4 @@
-import { DateValue } from "../components/MyCalender";
+import { DateValue } from "../hooks/useWeekRecord";
 import dayjs from "dayjs";
 
 // 날짜를 빼는 함수
