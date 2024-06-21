@@ -1,14 +1,14 @@
 import { httpClient } from "./http";
 import { WeeklyTeamRecords } from "../models/WeeklyTeamRecords";
 
-type WeeklyTeamReacordProps = {
-  week: number;
+type WeeklyTeamRecordProps = {
   year: number;
+  week: number;
 };
 
-export const getWeeklyTeamRecord = async ({ week, year }: WeeklyTeamReacordProps) => {
+export const getWeeklyTeamRecord = async ({ year, week }: WeeklyTeamRecordProps) => {
   const response = await httpClient.get<WeeklyTeamRecords[]>(`/api/weekly?year=${year}&week=${week}`);
-  return response;
+  return response.data;
 };
 
 type UpdateWeeklyAchieveProps = {

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { getWeeklyTeamRecord, updateWeeklyAchieve } from "../api/record.api";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getWeeklyTeamRecord } from "../api/record.api";
 import { getWeekRange, compareDate } from "../lib/formatDate";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-
 import { WeeklyTeamRecords } from "../models/WeeklyTeamRecords";
 
 type ValuePiece = Date | null;
@@ -14,12 +15,16 @@ export type TileClassNameProps = {
 };
 
 const useWeekRecord = () => {
+  const queryClient = useQueryClient();
   // week 달력 관련 상태
   const [date, setDate] = useState<DateValue>(new Date());
   const [dateRange, setDateRange] = useState<string[]>(() => getWeekRange(new Date()));
   const [weekNum, setWeekNum] = useState<number>(() => dayjs(new Date()).week());
 
-  const [weeklyTeamRecords, setWeekTeamRecords] = useState<WeeklyTeamRecords[]>([]);
+  const { data } = useQuery({
+    queryKey: ["weekly", "record", dayjs(date as Date).year(), weekNum],
+    queryFn: () => getWeeklyTeamRecord({ year: dayjs(date as Date).year(), week: weekNum }),
+  });
 
   // week 달력 관련 핸들러
   const handleDateClick = (date: Date) => {
@@ -42,13 +47,15 @@ const useWeekRecord = () => {
     return null;
   };
 
-  useEffect(() => {
-    getWeeklyTeamRecord({ year: dayjs(date as Date).year(), week: weekNum }).then(({ data }) => {
-      setWeekTeamRecords(data);
-    });
-  }, [dateRange]);
+  const copyPrevWeekToCurrent = () => {
+    const prevWeekData = queryClient.getQueryData<WeeklyTeamRecords[]>(["weekly", "record", dayjs(date as Date).year(), weekNum - 1]);
+    console.log("usehook에서의 prevWeekdata: ", prevWeekData);
+    const removeCompletedData = prevWeekData?.filter((record) => record.achieve === false);
+    console.log("usehook에서의 removeCompletedData : ", removeCompletedData);
+    queryClient.setQueryData(["weekly", "record", dayjs(date as Date).year(), weekNum], removeCompletedData);
+  };
 
-  return { weeklyTeamRecords, getTileClassName, handleActiveStartDateChange, handleDateClick, setDateRange, setDate, setWeekNum, dateRange, date };
+  return { weeklyTeamRecords: data, weekNum, getTileClassName, handleActiveStartDateChange, handleDateClick, setDateRange, setDate, setWeekNum, dateRange, date, copyPrevWeekToCurrent };
 };
 
 export default useWeekRecord;
