@@ -8,7 +8,7 @@ export const TOAST_REMOVE_DELAY = 3000;
 export default function Toast({ id, message, type }: IToast) {
   const removeToast = useToastStore((state) => state.removeToast);
   const [isFadingOut, setIsFadingOut] = useState(false);
-  console.log("abc", isFadingOut);
+
   const handleRemoveToast = () => {
     setIsFadingOut(true);
   };
