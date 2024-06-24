@@ -16,10 +16,22 @@ const addDate = (date: DateValue, days: number) => {
 };
 
 export const getWeekRange = (date: DateValue) => {
-  const mondayDateOfWeek = subtractDate(date, (dayjs(date as Date).day() + 6) % 7);
-  const sundayDateOfWeek = addDate(date, (7 - dayjs(date as Date).day()) % 7);
+  const mondayDateOfWeek = dayjs(date as Date)
+    .startOf("week")
+    .add(1, "day")
+    .format(`YYYY-MM-DD`); // 월요일
+  const sundayDateOfWeek = dayjs(date as Date)
+    .endOf("week")
+    .add(1, "day")
+    .format(`YYYY-MM-DD`); // 일요일
 
   return [mondayDateOfWeek, sundayDateOfWeek];
+};
+
+export const getMondayDateOfWeek = (date: DateValue) => {
+  const mondayDateOfWeek = subtractDate(date, (dayjs(date as Date).day() + 6) % 7);
+
+  return new Date(mondayDateOfWeek);
 };
 
 export const compareDate = (selectedDate: Date, dateRange: string[]) => {

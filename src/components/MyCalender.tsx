@@ -10,18 +10,16 @@ dayjs.extend(weekOfYear);
 
 type Props = {
   handleDateClick: (date: Date) => void;
-  handleActiveStartDateChange: ({ action, activeStartDate, value, view }: any) => void;
   getTileClassName: ({ date, view }: TileClassNameProps) => string | null;
   setDate: React.Dispatch<React.SetStateAction<DateValue>>;
   date: DateValue;
 };
 
-export default function MyCalendar({ handleDateClick, handleActiveStartDateChange, getTileClassName, setDate, date }: Props) {
+export default function MyCalendar({ handleDateClick, getTileClassName, setDate, date }: Props) {
   return (
     <CalendarStyle
       onChange={setDate}
       onClickDay={handleDateClick}
-      onActiveStartDateChange={handleActiveStartDateChange}
       value={date}
       tileClassName={getTileClassName}
       showWeekNumbers={true}

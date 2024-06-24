@@ -13,19 +13,15 @@ type Props = {
 };
 
 export default function RecordUtils({ date, weekNum, currentWeekData, copyPrevWeekToCurrent }: Props) {
-  const { data } = useQuery({
-    queryKey: ["weekly", "record", dayjs(date as Date).year(), weekNum - 1],
-    queryFn: () => getWeeklyTeamRecord({ year: dayjs(date as Date).year(), week: weekNum - 1 }),
-    enabled: currentWeekData?.length === 0,
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["weekly", "record", dayjs(date as Date).year(), weekNum - 1],
+  //   queryFn: () => getWeeklyTeamRecord({ year: dayjs(date as Date).year(), week: weekNum - 1 }),
+  //   enabled: currentWeekData?.length === 0,
+  // });
 
-  console.log(data);
+  // console.log(data);
 
-  return (
-    <RecordUtilsStyle>
-      <button onClick={copyPrevWeekToCurrent}>이전 주차 기록 불러오기</button>
-    </RecordUtilsStyle>
-  );
+  return <RecordUtilsStyle>{/* <button onClick={copyPrevWeekToCurrent}>이전 주차 기록 불러오기</button> */}</RecordUtilsStyle>;
 }
 
 const RecordUtilsStyle = styled.div``;
