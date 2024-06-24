@@ -8,5 +8,5 @@ export interface WeeklyTeamRecords {
   celebrate: boolean;
   achieve: boolean;
   createdAt: string;
-  achievementDate: string;
+  achievementDate: string | null;
 }

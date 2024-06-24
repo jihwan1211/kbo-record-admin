@@ -1,8 +1,8 @@
 import { httpClient } from "./http";
 import { WeeklyTeamRecords } from "../models/WeeklyTeamRecords";
 
-export const getWeeklyTeamRecord = async (date: string) => {
-  const response = await httpClient.get<WeeklyTeamRecords[]>(`/api/weekly?date=${date}`);
+export const getWeeklyTeamRecord = async (date: string, done: boolean) => {
+  const response = await httpClient.get<WeeklyTeamRecords[]>(`/api/weekly?date=${date}&done=${done}`);
   return response.data;
 };
 
@@ -24,5 +24,10 @@ export const updateWeeklyCelebrate = async ({ mode, id, flag }: UpdateWeeklyBool
 
 export const updateWeeklyRecordChange = async (data: WeeklyTeamRecords) => {
   const response = await httpClient.put("/api/admin/weekly", data);
+  return response;
+};
+
+export const postNewTeamRecord = async (data: Omit<WeeklyTeamRecords, "id">) => {
+  const response = await httpClient.post("/api/admin/weekly/team", data);
   return response;
 };
