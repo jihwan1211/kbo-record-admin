@@ -1,23 +1,28 @@
 import { httpClient } from "./http";
 import { WeeklyTeamRecords } from "../models/WeeklyTeamRecords";
 
-type WeeklyTeamRecordProps = {
-  year: number;
-  week: number;
-};
-
-export const getWeeklyTeamRecord = async ({ year, week }: WeeklyTeamRecordProps) => {
-  const response = await httpClient.get<WeeklyTeamRecords[]>(`/api/weekly?year=${year}&week=${week}`);
+export const getWeeklyTeamRecord = async (date: string) => {
+  const response = await httpClient.get<WeeklyTeamRecords[]>(`/api/weekly?date=${date}`);
   return response.data;
 };
 
-type UpdateWeeklyAchieveProps = {
+export type UpdateWeeklyBooleanProps = {
   mode: string;
   id: number;
-  achieve: boolean;
+  flag: boolean;
 };
 
-export const updateWeeklyAchieve = async ({ mode, id, achieve }: UpdateWeeklyAchieveProps) => {
-  const response = await httpClient.put(`/api/admin/weekly?t=${mode}&id=${id}&achieve=${achieve}`);
+export const updateWeeklyAchieve = async ({ mode, id, flag }: UpdateWeeklyBooleanProps) => {
+  const response = await httpClient.put(`/api/admin/weekly/achieve?t=${mode}&id=${id}&achieve=${flag}`);
+  return response;
+};
+
+export const updateWeeklyCelebrate = async ({ mode, id, flag }: UpdateWeeklyBooleanProps) => {
+  const response = await httpClient.put(`/api/admin/weekly/celebrate?t=${mode}&id=${id}&celebrate=${flag}`);
+  return response;
+};
+
+export const updateWeeklyRecordChange = async (data: WeeklyTeamRecords) => {
+  const response = await httpClient.put("/api/admin/weekly", data);
   return response;
 };

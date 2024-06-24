@@ -11,7 +11,7 @@ export default function Dropdown({ children, toggleButton }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { isLoggedIn } = useAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  console.log(isDropdownOpen);
+
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -60,5 +60,6 @@ const DropdownStyle = styled.div<DropdownStyleProps>`
     text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: ${({ theme }) => theme.borderRadius.default};
+    background-color: white;
   }
 `;

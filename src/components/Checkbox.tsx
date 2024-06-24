@@ -1,22 +1,25 @@
 import { useReducer } from "react";
 import styled from "styled-components";
-import { updateWeeklyAchieve } from "../api/record.api";
 import useToastStore from "../store/ToastStore";
+import { UpdateWeeklyBooleanProps } from "../api/record.api";
 
 type Props = {
-  achieve: boolean;
+  stateProps: boolean;
+  setState: React.Dispatch<React.SetStateAction<boolean>>;
   id: number;
   mode: string;
+  apiFunction: (props: UpdateWeeklyBooleanProps) => Promise<any>;
 };
 
-export default function Checkbox({ achieve, id, mode }: Props) {
-  const [isAchieved, toggleIsAchieved] = useReducer((state) => !state, achieve || false);
+export default function Checkbox({ stateProps, setState, id, mode, apiFunction }: Props) {
+  const [isboolean, toggleIsBoolean] = useReducer((state) => !state, stateProps || false);
   const { addToast } = useToastStore();
 
-  const fetchWeeklyAchieve = () => {
-    updateWeeklyAchieve({ mode, id, achieve: !isAchieved }).then(
+  const fetchChange = () => {
+    apiFunction({ mode, id, flag: !stateProps }).then(
       (response) => {
-        toggleIsAchieved();
+        setState(!stateProps);
+        toggleIsBoolean();
         addToast({ message: "기록 달성 여부 변경에 성공하였습니다.", type: "info" });
       },
       (error) => {
@@ -25,11 +28,7 @@ export default function Checkbox({ achieve, id, mode }: Props) {
     );
   };
 
-  return (
-    <CheckboxStyle>
-      <input type="checkbox" checked={isAchieved} onChange={fetchWeeklyAchieve} />
-    </CheckboxStyle>
-  );
+  return <input type="checkbox" checked={isboolean} onChange={fetchChange} />;
 }
 
 const CheckboxStyle = styled.div``;
