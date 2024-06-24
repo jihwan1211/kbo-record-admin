@@ -1,7 +1,10 @@
 import styled from "styled-components";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaAlignJustify, FaAngleLeft } from "react-icons/fa";
 import { LayoutStyleProps } from "../layout/layout";
+import { FaRegSquareMinus } from "react-icons/fa6";
+import useSideMenuStore from "../store/SideMenuStore";
 
 export type Props = {
   isOpen: boolean;
@@ -10,6 +13,26 @@ export type Props = {
 
 export default function SideHeader({ isOpen, setIsOpen }: Props) {
   const location = useLocation();
+  const [activeMenu, setActiveMenu] = useState<"week" | "daily" | null>(null);
+  const dropdownRef = useRef<HTMLLIElement>(null);
+  const { setSecondMenu } = useSideMenuStore();
+
+  useEffect(() => {
+    function handleOutsideClick(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setActiveMenu(null);
+      }
+    }
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [dropdownRef]);
+
+  const handleMenuClick = (menu: "week" | "daily", e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    e.stopPropagation();
+    setActiveMenu((prevMenu) => (prevMenu === menu ? null : menu));
+  };
 
   return (
     <SideHeaderStyle $isOpen={isOpen}>
@@ -22,12 +45,34 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
 
       <div className="link">
         <ul>
-          <LiStyle className="weekly" $isActive={location.pathname === "/weekly"}>
-            <Link to="/weekly">주간 기록 관리</Link>
+          <LiStyle className="weekly" $isActive={location.pathname === "/weekly"} onClick={(e) => handleMenuClick("week", e)} ref={dropdownRef}>
+            <p>주간 기록 관리</p>
+            {activeMenu && <FaRegSquareMinus />}
           </LiStyle>
-          <LiStyle className="daily" $isActive={location.pathname === "/daily"}>
-            <Link to="/daily">일간 기록 관리</Link>
+          {activeMenu === "week" && (
+            <ul className="second-menu">
+              <li onClick={() => setSecondMenu("UNDONE")}>
+                <Link to="/weekly">미달성 기록 관리</Link>
+              </li>
+              <li onClick={() => setSecondMenu("DONE")}>
+                <Link to="/weekly">달성 기록 관리</Link>
+              </li>
+            </ul>
+          )}
+          <LiStyle className="daily" $isActive={location.pathname === "/daily"} onClick={(e) => handleMenuClick("daily", e)} ref={dropdownRef}>
+            <p>일간 기록 관리</p>
+            {activeMenu && <FaRegSquareMinus />}
           </LiStyle>
+          {activeMenu === "daily" && (
+            <ul className="second-menu">
+              <li onClick={() => setSecondMenu("UNDONE")}>
+                <Link to="/daily">미달성 기록 관리</Link>
+              </li>
+              <li onClick={() => setSecondMenu("DONE")}>
+                <Link to="/daily">달성 기록 관리</Link>
+              </li>
+            </ul>
+          )}
         </ul>
       </div>
     </SideHeaderStyle>
@@ -35,7 +80,7 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
 }
 
 const SideHeaderStyle = styled.div<LayoutStyleProps>`
-  width: 160px;
+  width: 200px;
   height: 100dvh;
   padding: 10px;
   background-color: ${({ theme }) => theme.menu.backgroundColor};
@@ -46,7 +91,14 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
   transform: ${({ $isOpen }) => ($isOpen ? "translateX(0)" : "translateX(-100%)")};
   transition: 0.3s ease-in-out;
 
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
   .icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
     display: flex;
     justify-content: flex-end;
     cursor: pointer;
@@ -57,6 +109,9 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
   }
 
   .link {
+    width: 100%;
+    margin-top: 25px;
+    font-weight: 600;
     ul {
       list-style-type: none;
       margin: 0;
@@ -66,35 +121,61 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
       flex-direction: column;
       align-items: center;
 
-      a {
-        text-decoration: none;
-        font-weight: 600;
-      }
-
       li {
         padding: 10px;
         cursor: pointer;
       }
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+
+  .second-menu {
+    li {
+      padding: 5px;
+      font-size: 0.85rem;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+
+    li:hover {
+      background-color: ${({ theme }) => theme.menu.hoverBackgroundColor};
     }
   }
 `;
 
 type LiStyleProps = {
-  $isActive: boolean;
+  $isActive?: boolean;
 };
 
 const LiStyle = styled.li<LiStyleProps>`
+  width: 100%;
   padding: 10px;
   margin: 5px 0;
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.default};
   background-color: ${({ $isActive, theme }) => ($isActive ? theme.menu.color : theme.menu.backgroundColor)};
 
+  position: relative;
+  svg {
+    z-index: 1000;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    fill: ${({ $isActive, theme }) => ($isActive ? theme.menu.backgroundColor : theme.menu.color)};
+  }
+
   &:hover {
     background-color: ${({ $isActive, theme }) => ($isActive ? "" : theme.menu.hoverBackgroundColor)};
   }
 
-  a {
+  p {
     color: ${({ $isActive, theme }) => ($isActive ? theme.menu.backgroundColor : theme.menu.color)};
   }
 `;

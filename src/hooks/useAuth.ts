@@ -15,6 +15,7 @@ const useAuth = () => {
         storeLogin(res.data.token);
         setIsLoginFailed(false);
         navigate("/");
+        window.location.reload();
       },
       (error) => {
         setIsLoginFailed(true);

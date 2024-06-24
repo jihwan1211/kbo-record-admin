@@ -31,8 +31,6 @@ export default function RecordTable({ records, mode, mondayOfWeek }: Props) {
 }
 
 const RecordTableStyle = styled.div`
-  flex: 1;
-
   table {
     width: 100%;
 
