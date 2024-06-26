@@ -1,17 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getWeeklyTeamRecord } from "../api/record.api";
-import { getWeekRange, compareDate, getMondayDateOfWeek } from "../lib/formatDate";
+import { getWeekRange, getMondayDateOfWeek } from "../lib/formatDate";
 import dayjs from "dayjs";
-import { WeeklyTeamRecords } from "../models/WeeklyTeamRecords";
 
 type ValuePiece = Date | null;
 export type DateValue = ValuePiece | [ValuePiece, ValuePiece];
-
-export type TileClassNameProps = {
-  date: Date;
-  view: string;
-};
 
 const useWeekRecord = () => {
   // week 달력 관련 상태
@@ -28,6 +22,7 @@ const useWeekRecord = () => {
     queryKey: ["weekly", "record", dayjs(mondayOfWeek).format("YYYY-MM-DD"), "DONE"],
     queryFn: () => getWeeklyTeamRecord(dayjs(mondayOfWeek).format("YYYY-MM-DD"), true),
   });
+
   // week 달력 관련 핸들러
   const handleDateClick = (date: Date) => {
     setDate(date);
@@ -35,15 +30,7 @@ const useWeekRecord = () => {
     setDateRange(getWeekRange(date));
   };
 
-  const getTileClassName = ({ date, view }: TileClassNameProps): string | null => {
-    if (view === "month") {
-      const isInRange = compareDate(date, dateRange);
-      return isInRange ? "highlight" : null;
-    }
-    return null;
-  };
-
-  return { weeklyUndoneTeamRecords: undoneData, weeklyDoneTeamRecords: doneData, getTileClassName, handleDateClick, setDateRange, setDate, mondayOfWeek, dateRange, date };
+  return { weeklyUndoneTeamRecords: undoneData, weeklyDoneTeamRecords: doneData, handleDateClick, setDateRange, setDate, mondayOfWeek, dateRange, date };
 };
 
 export default useWeekRecord;

@@ -4,18 +4,32 @@ import "react-calendar/dist/Calendar.css";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { getWeekRange } from "../lib/formatDate";
-import { DateValue, TileClassNameProps } from "../hooks/useWeekRecord";
+import { DateValue } from "../hooks/useWeekRecord";
+import { compareDate } from "../lib/formatDate";
 
 dayjs.extend(weekOfYear);
 
 type Props = {
   handleDateClick: (date: Date) => void;
-  getTileClassName: ({ date, view }: TileClassNameProps) => string | null;
   setDate: React.Dispatch<React.SetStateAction<DateValue>>;
   date: DateValue;
+  dateRange: string[];
 };
 
-export default function MyCalendar({ handleDateClick, getTileClassName, setDate, date }: Props) {
+type TileClassNameProps = {
+  date: Date;
+  view: string;
+};
+
+export default function MyCalendar({ handleDateClick, setDate, date, dateRange }: Props) {
+  const getTileClassName = ({ date, view }: TileClassNameProps): string | null => {
+    if (view === "month") {
+      const isInRange = compareDate(date, dateRange);
+      return isInRange ? "highlight" : null;
+    }
+    return null;
+  };
+
   return (
     <CalendarStyle
       onChange={setDate}

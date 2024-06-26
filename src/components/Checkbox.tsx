@@ -1,25 +1,24 @@
 import { useReducer } from "react";
-import styled from "styled-components";
 import useToastStore from "../store/ToastStore";
 import { UpdateWeeklyBooleanProps } from "../api/record.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import useSideMenuStore from "../store/SideMenuStore";
 
-type Props = {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   stateProps: boolean;
   setState: React.Dispatch<React.SetStateAction<boolean>>;
-  id: number;
+  recordId: number;
   mode: string;
   apiFunction: (props: UpdateWeeklyBooleanProps) => Promise<any>;
   mondayOfWeek: Date;
-};
+}
 
-export default function Checkbox({ stateProps, setState, id, mode, apiFunction, mondayOfWeek }: Props) {
-  const queryClient = useQueryClient();
+export default function Checkbox({ stateProps, setState, recordId, mode, apiFunction, mondayOfWeek, ...props }: Props) {
   const [isboolean, toggleIsBoolean] = useReducer((state) => !state, stateProps || false);
   const { addToast } = useToastStore();
   const { secondMenu } = useSideMenuStore();
+  const queryClient = useQueryClient();
 
   const invalidateQueries = () => {
     const queryKey = ["weekly", "record", dayjs(mondayOfWeek).format("YYYY-MM-DD"), secondMenu === "DONE" ? "UNDONE" : "DONE"];
@@ -27,11 +26,11 @@ export default function Checkbox({ stateProps, setState, id, mode, apiFunction, 
   };
 
   const { mutate } = useMutation({
-    mutationFn: async () => apiFunction({ mode, id, flag: !stateProps }),
+    mutationFn: async () => apiFunction({ mode, id: recordId, flag: !isboolean }),
     onSuccess: (response) => {
       invalidateQueries();
       addToast({ message: "기록 달성 여부 변경에 성공하였습니다.", type: "info" });
-      setState(!stateProps);
+      setState(!isboolean);
       toggleIsBoolean();
     },
     onError: (error) => {
@@ -39,10 +38,5 @@ export default function Checkbox({ stateProps, setState, id, mode, apiFunction, 
     },
   });
 
-  const fetchChange = () => {
-    mutate();
-  };
-  return <input type="checkbox" checked={isboolean} onChange={fetchChange} />;
+  return <input type="checkbox" checked={isboolean} onChange={() => mutate()} {...props} />;
 }
-
-const CheckboxStyle = styled.div``;

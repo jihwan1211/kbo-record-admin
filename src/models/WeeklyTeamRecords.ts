@@ -1,4 +1,4 @@
-export interface WeeklyTeamRecords {
+export interface WeeklyTeamRecord {
   id: number;
   team: string;
   content: string;
