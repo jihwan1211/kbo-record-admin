@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { useQueryClient } from "@tanstack/react-query";
 import useToastStore from "../store/ToastStore";
 import useAddTeamRecord from "../hooks/useAddTeamRecord";
+import { getMondayDateOfWeek } from "../lib/formatDate";
 
 type Props = {
   onClose: () => void;
@@ -20,7 +21,7 @@ export default function AddTeamRecord({ onClose }: Props) {
     mutate(undefined, {
       onSuccess: () => {
         addToast({ message: "팀 기록 저장에 성공하였습니다.", type: "info" });
-        queryClient.invalidateQueries({ queryKey: ["weekly", "record", dayjs(new Date()).format("YYYY-MM-DD"), "UNDONE"] });
+        queryClient.invalidateQueries({ queryKey: ["weekly", "record", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "UNDONE"] });
         onClose();
       },
     });

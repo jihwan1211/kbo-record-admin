@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { teamArr } from "../models/team";
 
-type Props = {
+interface Props extends React.SelectHTMLAttributes<HTMLSelectElement> {
   team: string;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-};
+}
 
 function lineupTeamArr(defaultTeam: string) {
   const newTeamArr = teamArr.filter((team) => team !== defaultTeam);
@@ -18,14 +18,10 @@ function lineupTeamArr(defaultTeam: string) {
   });
 }
 
-export default function TeamSelect({ team, onChange }: Props) {
+export default function TeamSelect({ team, onChange, ...props }: Props) {
   return (
-    <TeamSelectStyle>
-      <select value={team} onChange={onChange}>
-        {lineupTeamArr(team)}
-      </select>
-    </TeamSelectStyle>
+    <select value={team} onChange={onChange} {...props}>
+      {lineupTeamArr(team)}
+    </select>
   );
 }
-
-const TeamSelectStyle = styled.div``;

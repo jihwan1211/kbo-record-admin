@@ -27,7 +27,16 @@ export const updateWeeklyRecordChange = async (data: WeeklyTeamRecords) => {
   return response;
 };
 
-export const postNewTeamRecord = async (data: Omit<WeeklyTeamRecords, "id">) => {
+export const postNewWeeklyTeamRecord = async (data: Omit<WeeklyTeamRecords, "id">) => {
   const response = await httpClient.post("/api/admin/weekly/team", data);
+  return response;
+};
+
+export const deleteWeeklyTeamRecords = async (data: number[], mode: "team" | "player") => {
+  const response = await httpClient.delete(`/api/admin/weekly?t=${mode}`, {
+    data: {
+      data: [...data],
+    },
+  });
   return response;
 };

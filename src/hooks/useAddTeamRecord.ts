@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { postNewTeamRecord } from "../api/record.api";
+import { postNewWeeklyTeamRecord } from "../api/record.api";
 import useToastStore from "../store/ToastStore";
 import { getMondayDateOfWeek } from "../lib/formatDate";
 
@@ -17,7 +17,17 @@ const useAddTeamRecord = () => {
 
   const { mutate } = useMutation({
     mutationFn: async () =>
-      postNewTeamRecord({ team, content, accSum, remain, remark, celebrate, achieve: false, createdAt: dayjs(getMondayDateOfWeek(new Date(createdAt))).format("YYYY-MM-DD"), achievementDate: null }),
+      postNewWeeklyTeamRecord({
+        team,
+        content,
+        accSum,
+        remain,
+        remark,
+        celebrate,
+        achieve: false,
+        createdAt: dayjs(getMondayDateOfWeek(new Date(createdAt))).format("YYYY-MM-DD"),
+        achievementDate: null,
+      }),
     onError: (error) => {
       console.log(error);
       addToast({ message: `${error}, 팀 기록 저장에 실패하였습니다.`, type: "error" });
