@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type SecondMenu = "DONE" | "UNDONE";
+type SecondMenu = "WEEKLY-TEAM-ACHIEVED" | "WEEKLY-TEAM-NOT-ACHIEVED" | "WEEKLY-PLAYER-ACHIEVED" | "WEEKLY-PLAYER-NOT-ACHIEVED" | "UNDONE" | "DONE";
 
 type State = {
   secondMenu: SecondMenu;
@@ -11,7 +11,7 @@ type Action = {
 };
 
 const useSideMenuStore = create<State & Action>((set) => ({
-  secondMenu: "UNDONE",
+  secondMenu: "WEEKLY-TEAM-NOT-ACHIEVED",
   setSecondMenu: (menu: SecondMenu) => {
     set({ secondMenu: menu });
   },

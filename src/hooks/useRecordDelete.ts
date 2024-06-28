@@ -5,16 +5,22 @@ import dayjs from "dayjs";
 import { getMondayDateOfWeek } from "../lib/formatDate";
 import useToastStore from "../store/ToastStore";
 
-const useRecordDelete = () => {
+type Props = {
+  mode: "team" | "player";
+  queryKey: string[];
+};
+
+const useRecordDelete = ({ mode, queryKey }: Props) => {
   const queryClient = useQueryClient();
   const [deleteTargets, setDeleteTargets] = useState<number[]>([]);
   const { addToast } = useToastStore();
 
   const mutation = useMutation({
-    mutationFn: async () => deleteWeeklyTeamRecords(deleteTargets, "team"),
+    mutationFn: async () => deleteWeeklyTeamRecords(deleteTargets, mode),
     onSuccess: () => {
       addToast({ message: "팀 기록 삭제에 성공하였습니다.", type: "info" });
-      queryClient.invalidateQueries({ queryKey: ["weekly", "record", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "UNDONE"] });
+      // queryClient.invalidateQueries({ queryKey: ["weekly", "record", "team", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "UNDONE"] });
+      queryClient.invalidateQueries({ queryKey: queryKey });
     },
     onError: (error) => {
       console.log(error);

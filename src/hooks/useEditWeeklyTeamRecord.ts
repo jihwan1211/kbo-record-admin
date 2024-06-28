@@ -1,27 +1,24 @@
 import { useState } from "react";
-import { WeeklyTeamRecord } from "../models/WeeklyTeamRecords";
+import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
+import { IWeeklyPlayerRecord } from "@/models/WeeklyPlayerRecord";
 import dayjs from "dayjs";
 import { getMondayDateOfWeek } from "../lib/formatDate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateWeeklyRecordChange } from "../api/record.api";
+import { updateWeeklyRecord } from "../api/record.api";
 import useToastStore from "../store/ToastStore";
 import useSideMenuStore from "../store/SideMenuStore";
-import { WeekTeamRecordTableProps } from "../components/RecordTable";
+import { WeekRecordTableProps } from "../components/RecordTable";
+import { TPlayer } from "@/models/WeeklyPlayerRecord";
 
-const useEditWeeklyTeamRecord = ({ record, mondayOfWeek, setDeleteTargets, deleteTargets }: Omit<WeekTeamRecordTableProps, "records" | "mode"> & { record: WeeklyTeamRecord }) => {
+const useEditWeeklyTeamRecord = ({ record, mondayOfWeek, setDeleteTargets, deleteTargets }: Omit<WeekRecordTableProps, "records" | "mode"> & { record: IWeeklyTeamRecord | IWeeklyPlayerRecord }) => {
   const queryClient = useQueryClient();
-  const [recordState, setRecordState] = useState<Omit<WeeklyTeamRecord, "id" | "achieve" | "celebrate">>({
-    team: record.team,
-    content: record.content,
-    accSum: record.accSum,
-    remain: record.remain,
-    remark: record.remark,
-    createdAt: record.createdAt,
-    achievementDate: null,
+  const [recordState, setRecordState] = useState<Omit<IWeeklyTeamRecord, "id" | "achieve" | "celebrate">>({
+    ...record,
   });
   const [celebrate, setCelebrate] = useState(record.celebrate);
   const [achieve, setAchieve] = useState(record.achieve);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [player, setPlayer] = useState<TPlayer | null>(() => ("playerId" in record ? { id: record.playerId, player: record.player, team: record.team, uniformNumber: record.uniformNumber } : null));
   const { addToast } = useToastStore();
   const { secondMenu } = useSideMenuStore();
 
@@ -48,12 +45,15 @@ const useEditWeeklyTeamRecord = ({ record, mondayOfWeek, setDeleteTargets, delet
   const isDeleteChecked = (id: number) => deleteTargets.includes(id);
 
   const invalidateQueries = () => {
-    const queryKey = ["weekly", "record", dayjs(mondayOfWeek).format("YYYY-MM-DD"), secondMenu === "DONE" ? "DONE" : "UNDONE"];
+    let queryKey: [string, string, string, string, string, string?] = ["_1", "_2", "_3", "_4", "_5"];
+    if ("playerId" in recordState)
+      queryKey = ["weekly", "record", recordState.team, "player", dayjs(mondayOfWeek).format("YYYY-MM-DD"), secondMenu === "WEEKLY-PLAYER-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+    else queryKey = ["weekly", "record", "team", dayjs(mondayOfWeek).format("YYYY-MM-DD"), secondMenu === "WEEKLY-TEAM-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
     queryClient.invalidateQueries({ queryKey });
   };
 
   const mutation = useMutation({
-    mutationFn: async () => updateWeeklyRecordChange({ id: record.id, celebrate, achieve, ...recordState }),
+    mutationFn: async () => updateWeeklyRecord({ id: record.id, celebrate, achieve, ...recordState, playerId: player?.id }, "playerId" in recordState ? "player" : "team"),
     onSuccess: (response) => {
       invalidateQueries();
       addToast({ message: `${record.team} 기록 변경에 성공하였습니다.`, type: "info" });
@@ -64,7 +64,7 @@ const useEditWeeklyTeamRecord = ({ record, mondayOfWeek, setDeleteTargets, delet
     },
   });
 
-  return { isEditing, recordState, celebrate, achieve, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked };
+  return { player, setPlayer, isEditing, recordState, celebrate, achieve, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked };
 };
 
 export default useEditWeeklyTeamRecord;

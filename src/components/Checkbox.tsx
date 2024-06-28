@@ -21,7 +21,7 @@ export default function Checkbox({ stateProps, setState, recordId, mode, apiFunc
   const queryClient = useQueryClient();
 
   const invalidateQueries = () => {
-    const queryKey = ["weekly", "record", dayjs(mondayOfWeek).format("YYYY-MM-DD"), secondMenu === "DONE" ? "UNDONE" : "DONE"];
+    const queryKey = ["weekly", "record", "team", dayjs(mondayOfWeek).format("YYYY-MM-DD"), secondMenu === "DONE" ? "UNDONE" : "DONE"];
     queryClient.invalidateQueries({ queryKey });
   };
 

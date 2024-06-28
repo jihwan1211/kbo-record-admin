@@ -1,6 +1,8 @@
-export interface WeeklyTeamRecord {
+import { TeamType } from "./team";
+
+export interface IWeeklyTeamRecord {
   id: number;
-  team: string;
+  team: TeamType;
   content: string;
   accSum: string;
   remain: string;
