@@ -1,27 +1,28 @@
 import styled from "styled-components";
-import { FormEventHandler } from "react";
-import TeamSelect from "./TeamSelect";
-import dayjs from "dayjs";
+import { AddRecordProps } from "./AddTeamRecord";
+import { AddTeamRecordStyle } from "./AddTeamRecord";
 import { useQueryClient } from "@tanstack/react-query";
 import useToastStore from "../store/ToastStore";
-import useAddTeamRecord from "../hooks/useAddTeamRecord";
+import { FormEventHandler } from "react";
+import useAddWeeklyPlayerRecord from "../hooks/useAddWeeklyPlayerRecord";
+import PlayerSearch from "./PlayerSearch";
+import dayjs from "dayjs";
 import { getMondayDateOfWeek } from "../lib/formatDate";
 
-export type AddRecordProps = {
-  onClose: () => void;
-};
-
-export default function AddTeamRecord({ onClose }: AddRecordProps) {
+export default function AddPlayerRecord({ onClose }: AddRecordProps) {
   const queryClient = useQueryClient();
-  const { newRecord, handleNewRecordChange, celebrate, setCelebrate, mutate } = useAddTeamRecord();
+  // const { newRecord, handleNewRecordChange, celebrate, setCelebrate, mutate } = useAddTeamRecord();
+  const { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, mutate } = useAddWeeklyPlayerRecord();
   const { addToast } = useToastStore();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    if (!player) addToast({ message: "선수를 선택하세요.", type: "error" });
+    console.log(player?.team);
     mutate(undefined, {
       onSuccess: () => {
         addToast({ message: "팀 기록 저장에 성공하였습니다.", type: "info" });
-        queryClient.invalidateQueries({ queryKey: ["weekly", "record", "team", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "UNDONE"] });
+        queryClient.invalidateQueries({ queryKey: ["weekly", "record", player?.team, "player", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "UNDONE"] });
         onClose();
       },
     });
@@ -31,8 +32,8 @@ export default function AddTeamRecord({ onClose }: AddRecordProps) {
     <AddTeamRecordStyle onSubmit={handleSubmit}>
       <ul>
         <li>
-          <p>팀 기록</p>
-          <TeamSelect name="team" team={newRecord.team} setTeam={(e) => handleNewRecordChange(e)} />
+          <p>선수 검색</p>
+          <PlayerSearch name="player" player={player} setPlayer={setPlayer} />
         </li>
         <li>
           <p>기록명</p>
@@ -64,21 +65,4 @@ export default function AddTeamRecord({ onClose }: AddRecordProps) {
   );
 }
 
-export const AddTeamRecordStyle = styled.form`
-  width: 300px;
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-
-    p {
-      margin: 5px 0;
-    }
-
-    li {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-  }
-`;
+const AddPlayerRecordStyle = styled.div``;

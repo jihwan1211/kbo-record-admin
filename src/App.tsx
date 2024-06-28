@@ -6,10 +6,15 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { theme } from "./style/theme.ts";
 import Layout from "./layout/layout.tsx";
 import { GlobalStyle } from "./style/global.ts";
-import Weekly from "./pages/Weekly.tsx";
+
 import Daily from "./pages/Daily.tsx";
 import Login from "./pages/Login.tsx";
 import ToastContainer from "./components/ToastContainer.tsx";
+import WeeklyTeamNotAchieved from "./pages/WeeklyTeamNotAchieved.tsx";
+import WeeklyTeamAchieved from "./pages/WeeklyTeamAchieved.tsx";
+import WeeklyPlayerNotAchieved from "./pages/WeeklyPlayerNotAchieved.tsx";
+import WeeklyPlayerAchieved from "./pages/WeeklyPlayerAchieved.tsx";
+
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -29,10 +34,34 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/weekly",
+    path: "/weekly/team/achieved",
     element: (
       <Layout>
-        <Weekly />
+        <WeeklyTeamAchieved />
+      </Layout>
+    ),
+  },
+  {
+    path: "/weekly/team/not-achieved",
+    element: (
+      <Layout>
+        <WeeklyTeamNotAchieved />
+      </Layout>
+    ),
+  },
+  {
+    path: "/weekly/player/achieved",
+    element: (
+      <Layout>
+        <WeeklyPlayerAchieved />
+      </Layout>
+    ),
+  },
+  {
+    path: "/weekly/player/not-achieved",
+    element: (
+      <Layout>
+        <WeeklyPlayerNotAchieved />
       </Layout>
     ),
   },

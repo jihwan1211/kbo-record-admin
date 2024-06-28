@@ -51,11 +51,17 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
           </LiStyle>
           {activeMenu === "week" && (
             <ul className="second-menu">
-              <li onClick={() => setSecondMenu("UNDONE")}>
-                <Link to="/weekly">미달성 기록 관리</Link>
+              <li onClick={() => setSecondMenu("WEEKLY-TEAM-NOT-ACHIEVED")}>
+                <Link to="/weekly/team/not-achieved">미달성 팀 기록 관리</Link>
               </li>
-              <li onClick={() => setSecondMenu("DONE")}>
-                <Link to="/weekly">달성 기록 관리</Link>
+              <li onClick={() => setSecondMenu("WEEKLY-TEAM-ACHIEVED")}>
+                <Link to="/weekly/team/achieved">달성 팀 기록 관리</Link>
+              </li>
+              <li onClick={() => setSecondMenu("WEEKLY-PLAYER-NOT-ACHIEVED")}>
+                <Link to="/weekly/player/not-achieved">미달성 개인 기록 관리</Link>
+              </li>
+              <li onClick={() => setSecondMenu("WEEKLY-PLAYER-ACHIEVED")}>
+                <Link to="/weekly/player/achieved">달성 개인 기록 관리</Link>
               </li>
             </ul>
           )}

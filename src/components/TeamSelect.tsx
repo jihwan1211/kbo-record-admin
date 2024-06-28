@@ -1,12 +1,12 @@
-import styled from "styled-components";
 import { teamArr } from "../models/team";
+import { TeamType } from "../models/team";
 
 interface Props extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  team: string;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  team: TeamType;
+  setTeam: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-function lineupTeamArr(defaultTeam: string) {
+function lineupTeamArr(defaultTeam: TeamType) {
   const newTeamArr = teamArr.filter((team) => team !== defaultTeam);
   newTeamArr.unshift(defaultTeam);
   return newTeamArr.map((team) => {
@@ -18,9 +18,9 @@ function lineupTeamArr(defaultTeam: string) {
   });
 }
 
-export default function TeamSelect({ team, onChange, ...props }: Props) {
+export default function TeamSelect({ team, setTeam, ...props }: Props) {
   return (
-    <select value={team} onChange={onChange} {...props}>
+    <select value={team} onChange={setTeam} {...props}>
       {lineupTeamArr(team)}
     </select>
   );
