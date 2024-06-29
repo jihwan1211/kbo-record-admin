@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { postNewWeeklyPlayerRecord } from "../api/record.api";
 import useToastStore from "../store/ToastStore";
 import { getMondayDateOfWeek } from "../lib/formatDate";
-import { IWeeklyPlayerRecord } from "../models/WeeklyPlayerRecord";
 import { TPlayer } from "../models/WeeklyPlayerRecord";
+import { FormEventHandler } from "react";
+
+type Props = {
+  onClose: () => void;
+};
 
 export type newPlayerRecord = {
   content: string;
@@ -16,7 +20,8 @@ export type newPlayerRecord = {
   achievementDate: string | null;
 };
 
-const useAddWeeklyPlayerRecord = () => {
+const useAddWeeklyPlayerRecord = ({ onClose }: Props) => {
+  const queryClient = useQueryClient();
   const [newRecord, setNewRecord] = useState<newPlayerRecord>({
     content: "",
     accSum: "",
@@ -31,8 +36,6 @@ const useAddWeeklyPlayerRecord = () => {
 
   const handleNewRecordChange = (e: any) => {
     let { name, value } = e.target;
-    // console.log(name);
-    // console.log(value);
     if (name == "remark") value = Number(value);
     else if (name == "createdAt") value = dayjs(getMondayDateOfWeek(value)).format("YYYY-MM-DD");
     setNewRecord((prevState) => ({
@@ -40,9 +43,6 @@ const useAddWeeklyPlayerRecord = () => {
       [name]: value,
     }));
   };
-  console.log(player);
-  console.log(newRecord);
-  console.log(celebrate);
 
   const { mutate } = useMutation({
     mutationFn: async () =>
@@ -53,12 +53,27 @@ const useAddWeeklyPlayerRecord = () => {
         achieve: false,
       }),
     onError: (error) => {
-      console.log(error);
       addToast({ message: `${error}, 선수 기록 저장에 실패하였습니다.`, type: "error" });
     },
   });
 
-  return { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, mutate };
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    if (!player?.id) {
+      addToast({ message: "선수를 선택하세요.", type: "error" });
+      return;
+    }
+
+    mutate(undefined, {
+      onSuccess: () => {
+        addToast({ message: "팀 기록 저장에 성공하였습니다.", type: "info" });
+        queryClient.invalidateQueries({ queryKey: ["weekly", "record", player?.team, "player", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "NOT-ACHIEVED"] });
+        onClose();
+      },
+    });
+  };
+
+  return { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, mutate, handleSubmit };
 };
 
 export default useAddWeeklyPlayerRecord;

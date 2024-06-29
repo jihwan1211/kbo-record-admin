@@ -4,7 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { getWeekRange } from "../lib/formatDate";
-import { DateValue } from "../hooks/useWeekRecord";
+import { DateValue } from "@/hooks/useWeekCalendar";
 import { compareDate } from "../lib/formatDate";
 
 dayjs.extend(weekOfYear);

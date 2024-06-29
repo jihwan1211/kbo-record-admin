@@ -17,11 +17,15 @@ const createClient = (config?: AxiosRequestConfig) => {
   });
 
   instance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      if (response.status === 204) {
+        response.data = { message: "NO-DATA" };
+      }
+      return response;
+    },
     (error) => {
       // 로그인 만료 처리
       if (error.response.status === 401) {
-        console.log("에엡");
         removeToken();
         window.location.href = "/login";
         return;

@@ -1,11 +1,11 @@
-import { FaPlusSquare } from "react-icons/fa";
+import { FaPlusSquare, FaMinusSquare } from "react-icons/fa";
 import styled from "styled-components";
 import { useState } from "react";
 import Modal from "./Modal";
 import AddPlayerRecord from "./AddPlayerRecord";
 import AddTeamRecord from "./AddTeamRecord";
-import useSideMenuStore from "../store/SideMenuStore";
 import { useLocation } from "react-router-dom";
+import AddPlayer from "./AddPlayer";
 
 type Props = {
   title: string;
@@ -14,28 +14,47 @@ type Props = {
 };
 
 export default function RecordHeader({ title, handleRecordDelete, children }: Props) {
-  const [isModalOpened, setIsModalOpen] = useState(false);
-  const { secondMenu } = useSideMenuStore();
+  const [modalMenu, setModalMenu] = useState<"record-register" | "record-delete" | "player-register" | null>(null);
   const location = useLocation();
-  console.log(location);
+
   return (
     <RecordHeaderStyle>
       <div className="title">
         <h2>{title}</h2>
         <div className="add-record">
-          <div className="record-feature" onClick={() => setIsModalOpen(true)}>
-            <FaPlusSquare />
-            <p>기록 추가</p>
-          </div>
+          {location.pathname.includes("not-achieved") && (
+            <div className="record-feature" onClick={() => setModalMenu("record-register")}>
+              <FaPlusSquare />
+              <p>기록 추가</p>
+            </div>
+          )}
           <div className="record-feature" onClick={handleRecordDelete}>
-            <FaPlusSquare />
+            <FaMinusSquare />
             <p>기록 삭제</p>
           </div>
+          {location.pathname.includes("player") && (
+            <div
+              className="record-feature"
+              onClick={() => {
+                setModalMenu("player-register");
+              }}
+            >
+              <FaPlusSquare />
+              <p>선수 등록</p>
+            </div>
+          )}
         </div>
       </div>
       {children}
-      <Modal isOpen={isModalOpened} onClose={() => setIsModalOpen(false)}>
-        {location.pathname.includes("team") ? <AddTeamRecord onClose={() => setIsModalOpen(false)} /> : <AddPlayerRecord onClose={() => setIsModalOpen(false)} />}
+      <Modal isOpen={modalMenu} onClose={() => setModalMenu(null)}>
+        {location.pathname.includes("team") ? (
+          <AddTeamRecord onClose={() => setModalMenu(null)} />
+        ) : (
+          <>
+            {modalMenu === "record-register" && <AddPlayerRecord onClose={() => setModalMenu(null)} />}
+            {modalMenu === "player-register" && <AddPlayer onClose={() => setModalMenu(null)} />}
+          </>
+        )}
       </Modal>
     </RecordHeaderStyle>
   );

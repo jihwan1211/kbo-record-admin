@@ -1,32 +1,10 @@
-import styled from "styled-components";
 import { AddRecordProps } from "./AddTeamRecord";
 import { AddTeamRecordStyle } from "./AddTeamRecord";
-import { useQueryClient } from "@tanstack/react-query";
-import useToastStore from "../store/ToastStore";
-import { FormEventHandler } from "react";
 import useAddWeeklyPlayerRecord from "../hooks/useAddWeeklyPlayerRecord";
 import PlayerSearch from "./PlayerSearch";
-import dayjs from "dayjs";
-import { getMondayDateOfWeek } from "../lib/formatDate";
 
 export default function AddPlayerRecord({ onClose }: AddRecordProps) {
-  const queryClient = useQueryClient();
-  // const { newRecord, handleNewRecordChange, celebrate, setCelebrate, mutate } = useAddTeamRecord();
-  const { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, mutate } = useAddWeeklyPlayerRecord();
-  const { addToast } = useToastStore();
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    if (!player) addToast({ message: "선수를 선택하세요.", type: "error" });
-    console.log(player?.team);
-    mutate(undefined, {
-      onSuccess: () => {
-        addToast({ message: "팀 기록 저장에 성공하였습니다.", type: "info" });
-        queryClient.invalidateQueries({ queryKey: ["weekly", "record", player?.team, "player", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "UNDONE"] });
-        onClose();
-      },
-    });
-  };
+  const { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, handleSubmit } = useAddWeeklyPlayerRecord({ onClose });
 
   return (
     <AddTeamRecordStyle onSubmit={handleSubmit}>
@@ -64,5 +42,3 @@ export default function AddPlayerRecord({ onClose }: AddRecordProps) {
     </AddTeamRecordStyle>
   );
 }
-
-const AddPlayerRecordStyle = styled.div``;

@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 
 interface Props {
   children: React.ReactNode;
-  isOpen: boolean;
+  isOpen: "record-register" | "record-delete" | "player-register" | null;
   onClose: () => void;
 }
 
