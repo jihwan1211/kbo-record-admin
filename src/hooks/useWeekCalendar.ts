@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getWeekRange, getMondayDateOfWeek } from "../lib/formatDate";
 
-type ValuePiece = Date | null;
+export type ValuePiece = Date | null;
 export type DateValue = ValuePiece | [ValuePiece, ValuePiece];
 
 const useWeekRecord = () => {

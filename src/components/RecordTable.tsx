@@ -11,6 +11,7 @@ export type WeekRecordTableProps = {
 };
 
 export default function RecordTable({ records, mondayOfWeek, deleteTargets, setDeleteTargets }: WeekRecordTableProps) {
+  if (!records.length) return <p>저장된 기록이 없습니다.</p>;
   return (
     <RecordTableStyle>
       <table>

@@ -48,7 +48,7 @@ export const getWeeklyPlayerRecord = async (date: string, done: boolean, team: T
   return response.data;
 };
 
-export const postNewWeeklyPlayerRecord = async (data: Omit<IWeeklyPlayerRecord, "id">) => {
+export const postNewWeeklyPlayerRecord = async (data: Omit<IWeeklyPlayerRecord, "id" | "player" | "uniformNumber" | "team">) => {
   const response = await httpClient.post("/api/admin/weekly/player", data);
   return response;
 };
