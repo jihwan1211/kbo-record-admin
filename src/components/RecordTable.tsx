@@ -5,12 +5,13 @@ import RecordRow from "./RecordRow";
 
 export type WeekRecordTableProps = {
   records: IWeeklyTeamRecord[] | IWeeklyPlayerRecord[];
-  mondayOfWeek: Date;
+  date: Date;
   setDeleteTargets: React.Dispatch<React.SetStateAction<number[]>>;
   deleteTargets: number[];
+  target: "daily" | "weekly";
 };
 
-export default function RecordTable({ records, mondayOfWeek, deleteTargets, setDeleteTargets }: WeekRecordTableProps) {
+export default function RecordTable({ records, date, deleteTargets, setDeleteTargets, target }: WeekRecordTableProps) {
   if (!records.length) return <p>저장된 기록이 없습니다.</p>;
   return (
     <RecordTableStyle>
@@ -30,7 +31,7 @@ export default function RecordTable({ records, mondayOfWeek, deleteTargets, setD
         </thead>
         <tbody>
           {records.map((record) => (
-            <RecordRow key={record.id} record={record} mondayOfWeek={mondayOfWeek} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} />
+            <RecordRow key={record.id} record={record} date={date} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} target={target} />
           ))}
         </tbody>
       </table>

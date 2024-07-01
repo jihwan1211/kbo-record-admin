@@ -26,7 +26,7 @@ export type LayoutStyleProps = {
 
 const LayoutStyle = styled.div<LayoutStyleProps>`
   width: 100%;
-  height: 1000dvh;
+  height: 100dvh;
   margin: 0 auto;
   /* max-width: ${({ theme }) => theme.layout.width.pc};
   max-width: 100%; */

@@ -14,6 +14,8 @@ import WeeklyTeamNotAchieved from "./pages/WeeklyTeamNotAchieved.tsx";
 import WeeklyTeamAchieved from "./pages/WeeklyTeamAchieved.tsx";
 import WeeklyPlayerNotAchieved from "./pages/WeeklyPlayerNotAchieved.tsx";
 import WeeklyPlayerAchieved from "./pages/WeeklyPlayerAchieved.tsx";
+import DailyNotAchieved from "./pages/DailyNotAchieved.tsx";
+import DailyAchieved from "./pages/DailyAchieved.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -66,10 +68,18 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/daily",
+    path: "/daily/not-achieved",
     element: (
       <Layout>
-        <Daily />
+        <DailyNotAchieved />
+      </Layout>
+    ),
+  },
+  {
+    path: "/daily/achieved",
+    element: (
+      <Layout>
+        <DailyAchieved />
       </Layout>
     ),
   },

@@ -4,17 +4,22 @@ import { IWeeklyPlayerRecord } from "@/models/WeeklyPlayerRecord";
 import dayjs from "dayjs";
 import { getMondayDateOfWeek } from "../lib/formatDate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateWeeklyRecord } from "../api/record.api";
+import { updateRecord } from "@/api/record.api";
 import useToastStore from "../store/ToastStore";
 import useSideMenuStore from "../store/SideMenuStore";
-import { WeekRecordTableProps } from "../components/RecordTable";
 import { TPlayer } from "@/models/WeeklyPlayerRecord";
 
-const useEditWeeklyTeamRecord = ({ record, mondayOfWeek, setDeleteTargets, deleteTargets }: Omit<WeekRecordTableProps, "records" | "mode"> & { record: IWeeklyTeamRecord | IWeeklyPlayerRecord }) => {
+type Props = {
+  record: IWeeklyTeamRecord | IWeeklyPlayerRecord;
+  date: Date;
+  setDeleteTargets: React.Dispatch<React.SetStateAction<number[]>>;
+  deleteTargets: number[];
+  target: "daily" | "weekly";
+};
+
+const useEditWeeklyTeamRecord = ({ record, date, setDeleteTargets, deleteTargets, target }: Props) => {
   const queryClient = useQueryClient();
-  const [recordState, setRecordState] = useState<Omit<IWeeklyTeamRecord, "id" | "achieve" | "celebrate">>({
-    ...record,
-  });
+  const [recordState, setRecordState] = useState<Omit<IWeeklyTeamRecord, "id" | "achieve" | "celebrate">>({ ...record });
   const [celebrate, setCelebrate] = useState(record.celebrate);
   const [achieve, setAchieve] = useState(record.achieve);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -25,7 +30,8 @@ const useEditWeeklyTeamRecord = ({ record, mondayOfWeek, setDeleteTargets, delet
   const handleInputChange = (e: any) => {
     let { name, value } = e.target;
     if (name == "remark") value = Number(value);
-    else if (name == "createdAt") value = dayjs(getMondayDateOfWeek(value)).format("YYYY-MM-DD");
+    else if (name == "createdAt") value = target === "weekly" ? dayjs(getMondayDateOfWeek(value)).format("YYYY-MM-DD") : dayjs(value).format("YYYY-MM-DD");
+
     setRecordState((prevState) => ({
       ...prevState,
       [name]: value,
@@ -45,15 +51,19 @@ const useEditWeeklyTeamRecord = ({ record, mondayOfWeek, setDeleteTargets, delet
   const isDeleteChecked = (id: number) => deleteTargets.includes(id);
 
   const invalidateQueries = () => {
-    let queryKey: [string, string, string, string, string, string?] = ["_1", "_2", "_3", "_4", "_5"];
-    if ("playerId" in recordState)
-      queryKey = ["weekly", "record", recordState.team, "player", dayjs(mondayOfWeek).format("YYYY-MM-DD"), secondMenu === "WEEKLY-PLAYER-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
-    else queryKey = ["weekly", "record", "team", dayjs(mondayOfWeek).format("YYYY-MM-DD"), secondMenu === "WEEKLY-TEAM-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+    let queryKey: string[] = [];
+    if (target === "weekly") {
+      if ("playerId" in recordState)
+        queryKey = ["weekly", "record", recordState.team, "player", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), secondMenu === "WEEKLY-PLAYER-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+      else queryKey = ["weekly", "record", "team", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), secondMenu === "WEEKLY-TEAM-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+    } else {
+      queryKey = ["daily", "record", recordState.team, "player", dayjs(date).format("YYYY-MM-DD"), secondMenu === "DAILY-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+    }
     queryClient.invalidateQueries({ queryKey });
   };
 
   const mutation = useMutation({
-    mutationFn: async () => updateWeeklyRecord({ id: record.id, celebrate, achieve, ...recordState, playerId: player?.id }, "playerId" in recordState ? "player" : "team"),
+    mutationFn: async () => updateRecord({ id: record.id, celebrate, achieve, ...recordState, playerId: player?.id }, target, "playerId" in recordState ? "player" : "team"),
     onSuccess: (response) => {
       invalidateQueries();
       addToast({ message: `${record.team} 기록 변경에 성공하였습니다.`, type: "info" });

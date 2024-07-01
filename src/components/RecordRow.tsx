@@ -3,18 +3,27 @@ import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
 import { IWeeklyPlayerRecord } from "@/models/WeeklyPlayerRecord";
 import Checkbox from "./Checkbox";
 import EditRecord from "./EditRecord";
-import { updateWeeklyAchieve, updateWeeklyCelebrate } from "../api/record.api";
+import { updateAchieve, updateCelebrate } from "@/api/record.api";
 import TeamSelect from "./TeamSelect";
-import { WeekRecordTableProps } from "./RecordTable";
+
 import useEditWeeklyTeamRecord from "../hooks/useEditWeeklyTeamRecord";
 import PlayerSearch from "./PlayerSearch";
 
-export default function RecordRow({ record, mondayOfWeek, setDeleteTargets, deleteTargets }: Omit<WeekRecordTableProps, "records"> & { record: IWeeklyTeamRecord | IWeeklyPlayerRecord }) {
+type Props = {
+  record: IWeeklyTeamRecord | IWeeklyPlayerRecord;
+  date: Date;
+  setDeleteTargets: React.Dispatch<React.SetStateAction<number[]>>;
+  deleteTargets: number[];
+  target: "daily" | "weekly";
+};
+
+export default function RecordRow({ record, date, setDeleteTargets, deleteTargets, target }: Props) {
   const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked } = useEditWeeklyTeamRecord({
     record,
-    mondayOfWeek,
+    date,
     setDeleteTargets,
     deleteTargets,
+    target,
   });
 
   return (
@@ -40,24 +49,10 @@ export default function RecordRow({ record, mondayOfWeek, setDeleteTargets, dele
       <td>{isEditing ? <input name="remain" value={recordState.remain} onChange={(e) => handleInputChange(e)} /> : record.remain}</td>
       <td>{isEditing ? <input name="remark" value={recordState.remark} onChange={(e) => handleInputChange(e)} /> : `${record.remark}번째`}</td>
       <td>
-        <Checkbox
-          stateProps={record.celebrate}
-          setState={setCelebrate}
-          mondayOfWeek={mondayOfWeek}
-          recordId={record.id}
-          mode={"playerId" in record ? "player" : "team"}
-          apiFunction={updateWeeklyCelebrate}
-        />
+        <Checkbox stateProps={record.celebrate} setState={setCelebrate} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateCelebrate} target={target} />
       </td>
       <td>
-        <Checkbox
-          stateProps={record.achieve}
-          setState={setAchieve}
-          mondayOfWeek={mondayOfWeek}
-          recordId={record.id}
-          mode={"playerId" in record ? "player" : "team"}
-          apiFunction={updateWeeklyAchieve}
-        />
+        <Checkbox stateProps={record.achieve} setState={setAchieve} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateAchieve} target={target} />
       </td>
       <td>{isEditing ? <input type="date" name="createdAt" value={recordState.createdAt} onChange={(e) => handleInputChange(e)} /> : record.createdAt}</td>
       <EditRecord isEditing={isEditing} setIsEditing={setIsEditing} handleRecordChange={mutation.mutate} />
