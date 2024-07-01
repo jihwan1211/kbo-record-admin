@@ -13,7 +13,7 @@ type Props = {
   handleDateClick: (date: Date) => void;
   setDate: React.Dispatch<React.SetStateAction<DateValue>>;
   date: DateValue;
-  dateRange: string[];
+  dateRange?: string[];
 };
 
 type TileClassNameProps = {
@@ -23,10 +23,11 @@ type TileClassNameProps = {
 
 export default function MyCalendar({ handleDateClick, setDate, date, dateRange }: Props) {
   const getTileClassName = ({ date, view }: TileClassNameProps): string | null => {
-    if (view === "month") {
+    if (dateRange && view === "month") {
       const isInRange = compareDate(date, dateRange);
       return isInRange ? "highlight" : null;
     }
+
     return null;
   };
 

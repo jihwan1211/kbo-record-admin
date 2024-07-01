@@ -16,6 +16,7 @@ export default function WeeklyPlayerAchieved() {
   const { handleDateClick, setDate, mondayOfWeek, dateRange, date } = useWeekCalendar();
   const { data } = useWeeklyPlayerAchievedRecord(mondayOfWeek, team);
   const { deleteTargets, setDeleteTargets, handleRecordDelete } = useRecordDelete({
+    target: "weekly",
     mode: "player",
     queryKey: ["weekly", "record", team, "player", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "ACHIEVED"],
   });
@@ -25,8 +26,8 @@ export default function WeeklyPlayerAchieved() {
   return (
     <WeeklyStyle>
       <div className="data">
-        <RecordHeader title="달성 개인 기록 관리" handleRecordDelete={handleRecordDelete}>
-          <RecordTable records={data} mondayOfWeek={mondayOfWeek} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} />
+        <RecordHeader title="달성 개인 기록 관리" handleRecordDelete={handleRecordDelete} target="weekly">
+          <RecordTable records={data} date={date as Date} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} target="weekly" />
         </RecordHeader>
       </div>
       <div className="select-team">

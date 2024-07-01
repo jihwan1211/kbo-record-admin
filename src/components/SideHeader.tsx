@@ -45,9 +45,9 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
 
       <div className="link">
         <ul>
-          <LiStyle className="weekly" $isActive={location.pathname === "/weekly"} onClick={(e) => handleMenuClick("week", e)} ref={dropdownRef}>
+          <LiStyle className="weekly" $isActive={location.pathname.includes("/weekly")} onClick={(e) => handleMenuClick("week", e)} ref={dropdownRef}>
             <p>주간 기록 관리</p>
-            {activeMenu && <FaRegSquareMinus />}
+            {activeMenu === "week" && <FaRegSquareMinus />}
           </LiStyle>
           {activeMenu === "week" && (
             <ul className="second-menu">
@@ -65,17 +65,17 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
               </li>
             </ul>
           )}
-          <LiStyle className="daily" $isActive={location.pathname === "/daily"} onClick={(e) => handleMenuClick("daily", e)} ref={dropdownRef}>
+          <LiStyle className="daily" $isActive={location.pathname.includes("/daily")} onClick={(e) => handleMenuClick("daily", e)} ref={dropdownRef}>
             <p>일간 기록 관리</p>
-            {activeMenu && <FaRegSquareMinus />}
+            {activeMenu === "daily" && <FaRegSquareMinus />}
           </LiStyle>
           {activeMenu === "daily" && (
             <ul className="second-menu">
-              <li onClick={() => setSecondMenu("UNDONE")}>
-                <Link to="/daily">미달성 기록 관리</Link>
+              <li onClick={() => setSecondMenu("DAILY-NOT-ACHIEVED")}>
+                <Link to="/daily/not-achieved">미달성 기록 관리</Link>
               </li>
-              <li onClick={() => setSecondMenu("DONE")}>
-                <Link to="/daily">달성 기록 관리</Link>
+              <li onClick={() => setSecondMenu("DAILY-ACHIEVED")}>
+                <Link to="/daily/achieved">달성 기록 관리</Link>
               </li>
             </ul>
           )}
@@ -126,11 +126,7 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
       display: flex;
       flex-direction: column;
       align-items: center;
-
-      li {
-        padding: 10px;
-        cursor: pointer;
-      }
+      gap: 10px;
 
       p {
         margin: 0;
@@ -142,11 +138,13 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
     li {
       padding: 5px;
       font-size: 0.85rem;
-    }
-
-    a {
-      text-decoration: none;
-      color: white;
+      cursor: pointer;
+      a {
+        top: 0;
+        left: 0;
+        text-decoration: none;
+        color: white;
+      }
     }
 
     li:hover {

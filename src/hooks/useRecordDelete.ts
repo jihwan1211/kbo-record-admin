@@ -1,24 +1,25 @@
 import { useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { deleteWeeklyTeamRecords } from "../api/record.api";
+import { deleteRecords } from "../api/record.api";
 import useToastStore from "../store/ToastStore";
 import { useAlert } from "@/hooks/useAlert";
 
 type Props = {
-  mode: "team" | "player";
+  target: "weekly" | "daily";
+  mode?: "team" | "player";
   queryKey: string[];
 };
 
-const useRecordDelete = ({ mode, queryKey }: Props) => {
+const useRecordDelete = ({ target, mode, queryKey }: Props) => {
   const queryClient = useQueryClient();
   const [deleteTargets, setDeleteTargets] = useState<number[]>([]);
   const { addToast } = useToastStore();
   const { showConfirm } = useAlert();
 
   const mutation = useMutation({
-    mutationFn: async () => deleteWeeklyTeamRecords(deleteTargets, mode),
+    mutationFn: async () => deleteRecords(deleteTargets, target, mode),
     onSuccess: () => {
-      addToast({ message: "선수 개인 기록 삭제에 성공하였습니다.", type: "info" });
+      addToast({ message: "기록 삭제에 성공하였습니다.", type: "info" });
       queryClient.invalidateQueries({ queryKey: queryKey });
     },
     onError: (error) => {

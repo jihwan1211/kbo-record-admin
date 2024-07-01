@@ -12,6 +12,7 @@ export default function WeeklyTeamNotAchieved() {
   const { handleDateClick, setDate, mondayOfWeek, dateRange, date } = useWeekCalendar();
   const { data } = useWeeklyTeamNotAchievedRecord(mondayOfWeek);
   const { deleteTargets, setDeleteTargets, handleRecordDelete } = useRecordDelete({
+    target: "weekly",
     mode: "team",
     queryKey: ["weekly", "record", "team", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "NOT-ACHIEVED"],
   });
@@ -21,8 +22,8 @@ export default function WeeklyTeamNotAchieved() {
   return (
     <WeeklyStyle>
       <div className="data">
-        <RecordHeader title="미달성 팀 기록 관리" handleRecordDelete={handleRecordDelete}>
-          <RecordTable records={data} mondayOfWeek={mondayOfWeek} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} />
+        <RecordHeader title="미달성 팀 기록 관리" handleRecordDelete={handleRecordDelete} target="weekly">
+          <RecordTable records={data} date={date as Date} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} target="weekly" />
         </RecordHeader>
       </div>
       <MyCalendar handleDateClick={handleDateClick} setDate={setDate} date={date} dateRange={dateRange} />

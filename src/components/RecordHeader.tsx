@@ -11,9 +11,10 @@ type Props = {
   title: string;
   handleRecordDelete: () => void;
   children: React.ReactNode;
+  target: "weekly" | "daily";
 };
 
-export default function RecordHeader({ title, handleRecordDelete, children }: Props) {
+export default function RecordHeader({ title, handleRecordDelete, children, target }: Props) {
   const [modalMenu, setModalMenu] = useState<"record-register" | "record-delete" | "player-register" | null>(null);
   const location = useLocation();
 
@@ -32,17 +33,18 @@ export default function RecordHeader({ title, handleRecordDelete, children }: Pr
             <FaMinusSquare />
             <p>기록 삭제</p>
           </div>
-          {location.pathname.includes("player") && (
-            <div
-              className="record-feature"
-              onClick={() => {
-                setModalMenu("player-register");
-              }}
-            >
-              <FaPlusSquare />
-              <p>선수 등록</p>
-            </div>
-          )}
+          {location.pathname.includes("player") ||
+            (location.pathname.includes("daily") && (
+              <div
+                className="record-feature"
+                onClick={() => {
+                  setModalMenu("player-register");
+                }}
+              >
+                <FaPlusSquare />
+                <p>선수 등록</p>
+              </div>
+            ))}
         </div>
       </div>
       {children}
@@ -51,7 +53,7 @@ export default function RecordHeader({ title, handleRecordDelete, children }: Pr
           <AddTeamRecord onClose={() => setModalMenu(null)} />
         ) : (
           <>
-            {modalMenu === "record-register" && <AddPlayerRecord onClose={() => setModalMenu(null)} />}
+            {modalMenu === "record-register" && <AddPlayerRecord onClose={() => setModalMenu(null)} target={target} />}
             {modalMenu === "player-register" && <AddPlayer onClose={() => setModalMenu(null)} />}
           </>
         )}
