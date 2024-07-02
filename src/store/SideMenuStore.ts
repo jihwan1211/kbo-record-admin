@@ -1,18 +1,18 @@
 import { create } from "zustand";
 
-type SecondMenu = "WEEKLY-TEAM-ACHIEVED" | "WEEKLY-TEAM-NOT-ACHIEVED" | "WEEKLY-PLAYER-ACHIEVED" | "WEEKLY-PLAYER-NOT-ACHIEVED" | "DAILY-NOT-ACHIEVED" | "DAILY-ACHIEVED";
+export type TSecondMenu = "WEEKLY-TEAM-ACHIEVED" | "WEEKLY-TEAM-NOT-ACHIEVED" | "WEEKLY-PLAYER-ACHIEVED" | "WEEKLY-PLAYER-NOT-ACHIEVED" | "DAILY-NOT-ACHIEVED" | "DAILY-ACHIEVED";
 
 type State = {
-  secondMenu: SecondMenu;
+  secondMenu: TSecondMenu;
 };
 
 type Action = {
-  setSecondMenu: (menu: SecondMenu) => void;
+  setSecondMenu: (menu: TSecondMenu) => void;
 };
 
 const useSideMenuStore = create<State & Action>((set) => ({
   secondMenu: "WEEKLY-TEAM-NOT-ACHIEVED",
-  setSecondMenu: (menu: SecondMenu) => {
+  setSecondMenu: (menu: TSecondMenu) => {
     set({ secondMenu: menu });
   },
 }));

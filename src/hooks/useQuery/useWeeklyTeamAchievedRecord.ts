@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 const useWeeklyTeamAchievedRecord = (mondayOfWeek: Date) => {
   const { data } = useQuery({
     queryKey: ["weekly", "record", "team", dayjs(mondayOfWeek).format("YYYY-MM-DD"), "ACHIEVED"],
-    queryFn: () => getWeeklyTeamRecord(dayjs(mondayOfWeek).format("YYYY-MM-DD"), true),
+    queryFn: () => getWeeklyTeamRecord({ date: dayjs(mondayOfWeek).format("YYYY-MM-DD"), isDone: true }),
   });
 
   return { data };

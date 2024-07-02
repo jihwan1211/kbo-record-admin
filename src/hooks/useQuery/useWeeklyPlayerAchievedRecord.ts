@@ -6,7 +6,7 @@ import { TeamType } from "../../models/team";
 const useWeeklyPlayerAchievedRecord = (mondayOfWeek: Date, team: TeamType) => {
   const { data } = useQuery({
     queryKey: ["weekly", "record", team, "player", dayjs(mondayOfWeek).format("YYYY-MM-DD"), "ACHIEVED"],
-    queryFn: () => getWeeklyPlayerRecord(dayjs(mondayOfWeek).format("YYYY-MM-DD"), true, team),
+    queryFn: () => getWeeklyPlayerRecord({ date: dayjs(mondayOfWeek).format("YYYY-MM-DD"), isDone: true, team: team }),
   });
   return { data };
 };

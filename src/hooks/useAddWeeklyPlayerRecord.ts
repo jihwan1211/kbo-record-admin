@@ -60,15 +60,15 @@ const useAddWeeklyPlayerRecord = ({ onClose, target }: Props) => {
 
   const { mutate } = useMutation({
     mutationFn: async () =>
-      postNewPlayerRecord(
-        {
+      postNewPlayerRecord({
+        data: {
           playerId: player?.id as number,
           ...newRecord,
           celebrate,
           achieve: false,
         },
-        target
-      ),
+        target,
+      }),
     onError: (error) => {
       addToast({ message: `${error}, 선수 기록 저장에 실패하였습니다.`, type: "error" });
     },
