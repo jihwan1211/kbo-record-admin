@@ -17,7 +17,7 @@ const useRecordDelete = ({ target, mode, queryKey }: Props) => {
   const { showConfirm } = useAlert();
 
   const mutation = useMutation({
-    mutationFn: async () => deleteRecords(deleteTargets, target, mode),
+    mutationFn: async () => deleteRecords({ data: deleteTargets, target, mode }),
     onSuccess: () => {
       addToast({ message: "기록 삭제에 성공하였습니다.", type: "info" });
       queryClient.invalidateQueries({ queryKey: queryKey });

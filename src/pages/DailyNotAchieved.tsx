@@ -8,7 +8,7 @@ import useRecordDelete from "@/hooks/useRecordDelete";
 import dayjs from "dayjs";
 import RecordHeader from "@components/RecordHeader";
 import RecordTable from "@components/RecordTable";
-import useDailyNotAchievedRecord from "@/hooks/useQuery/useDailyAchievedRecord";
+import useDailyNotAchievedRecord from "@/hooks/useQuery/useDailyNotAchievedRecord";
 
 export default function DailyNotAchieved() {
   const [team, setTeam] = useState<TeamType>("SSG");

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect, ChangeEventHandler } from "react";
 import { searchPlayer } from "../api/player.api";
 import { TPlayer } from "../models/WeeklyPlayerRecord";
+import useToastStore from "@/store/ToastStore";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   player: TPlayer | null;
@@ -12,6 +13,7 @@ export default function PlayerSearch({ player, setPlayer, ...props }: Props) {
   const [playerName, setPlayerName] = useState<string>(() => (player !== null ? player.player : ""));
   const [searchResult, setSearchResult] = useState<TPlayer[]>([]);
   const [noDataResponse, setNoDataResponse] = useState(false);
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     if (playerName == "") {
@@ -21,13 +23,15 @@ export default function PlayerSearch({ player, setPlayer, ...props }: Props) {
     const timer = setTimeout(() => {
       searchPlayer(playerName).then(
         (response) => {
-          if (response.message === "NO-DATA") {
+          if (response.status === 204) {
             setNoDataResponse(true);
             return;
           }
-          setSearchResult(response);
+          setSearchResult(response.data);
         },
-        (error) => {}
+        (error) => {
+          addToast({ message: `${error}가 발생했습니다`, type: "error" });
+        }
       );
     }, 500);
 

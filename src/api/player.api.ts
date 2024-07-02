@@ -3,7 +3,7 @@ import { TPlayer } from "@/models/WeeklyPlayerRecord";
 
 export const searchPlayer = async (data: string) => {
   const response = await httpClient(`/api/players?q=${data}`);
-  return response.data;
+  return response;
 };
 
 export const registerPlayer = async (data: Omit<TPlayer, "id">) => {

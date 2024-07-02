@@ -17,12 +17,7 @@ const createClient = (config?: AxiosRequestConfig) => {
   });
 
   instance.interceptors.response.use(
-    (response) => {
-      if (response.status === 204) {
-        response.data = { message: "NO-DATA" };
-      }
-      return response;
-    },
+    (response) => response,
     (error) => {
       // 로그인 만료 처리
       if (error.response.status === 401) {

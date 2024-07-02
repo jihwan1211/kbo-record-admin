@@ -63,7 +63,7 @@ const useEditWeeklyTeamRecord = ({ record, date, setDeleteTargets, deleteTargets
   };
 
   const mutation = useMutation({
-    mutationFn: async () => updateRecord({ id: record.id, celebrate, achieve, ...recordState, playerId: player?.id }, target, "playerId" in recordState ? "player" : "team"),
+    mutationFn: async () => updateRecord({ data: { id: record.id, celebrate, achieve, ...recordState, playerId: player?.id }, target, mode: "playerId" in recordState ? "player" : "team" }),
     onSuccess: (response) => {
       invalidateQueries();
       addToast({ message: `${record.team} 기록 변경에 성공하였습니다.`, type: "info" });

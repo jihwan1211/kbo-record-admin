@@ -3,8 +3,8 @@ import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
 import { TeamType } from "../models/team";
 import { IWeeklyPlayerRecord } from "../models/WeeklyPlayerRecord";
 
-export const getWeeklyTeamRecord = async (date: string, done: boolean) => {
-  const response = await httpClient.get<IWeeklyTeamRecord[]>(`/api/admin/weekly/team?date=${date}&done=${done}`);
+export const getWeeklyTeamRecord = async ({ date, isDone }: { date: string; isDone: boolean }) => {
+  const response = await httpClient.get<IWeeklyTeamRecord[]>(`/api/admin/weekly/team?date=${date}&done=${isDone}`);
   return response.data;
 };
 
@@ -27,7 +27,7 @@ export const updateCelebrate = async ({ mode, id, target, flag }: UpdateWeeklyBo
   return response;
 };
 
-export const updateRecord = async (data: IWeeklyTeamRecord | IWeeklyPlayerRecord, target: "weekly" | "daily", mode?: "team" | "player") => {
+export const updateRecord = async ({ data, target, mode }: { data: IWeeklyTeamRecord | IWeeklyPlayerRecord; target: "weekly" | "daily"; mode?: "team" | "player" }) => {
   const url = `/api/admin/record?t=${target}${mode ? `&m=${mode}` : ""}`;
   const response = await httpClient.put(url, data);
   return response;
@@ -38,7 +38,7 @@ export const postNewWeeklyTeamRecord = async (data: Omit<IWeeklyTeamRecord, "id"
   return response;
 };
 
-export const deleteRecords = async (data: number[], target: "weekly" | "daily", mode?: "team" | "player") => {
+export const deleteRecords = async ({ data, target, mode }: { data: number[]; target: "weekly" | "daily"; mode?: "team" | "player" }) => {
   const url = `/api/admin/record?t=${target}${mode ? `&m=${mode}` : ""}`;
 
   const response = await httpClient.delete(url, {
@@ -49,17 +49,17 @@ export const deleteRecords = async (data: number[], target: "weekly" | "daily", 
   return response;
 };
 
-export const getWeeklyPlayerRecord = async (date: string, done: boolean, team: TeamType) => {
-  const response = await httpClient.get<IWeeklyPlayerRecord[]>(`/api/admin/weekly/player/${team}?date=${date}&done=${done}`);
+export const getWeeklyPlayerRecord = async ({ date, isDone, team }: { date: string; isDone: boolean; team: TeamType }) => {
+  const response = await httpClient.get<IWeeklyPlayerRecord[]>(`/api/admin/weekly/player/${team}?date=${date}&done=${isDone}`);
   return response.data;
 };
 
-export const postNewPlayerRecord = async (data: Omit<IWeeklyPlayerRecord, "id" | "player" | "uniformNumber" | "team">, target: "weekly" | "daily") => {
+export const postNewPlayerRecord = async ({ data, target }: { data: Omit<IWeeklyPlayerRecord, "id" | "player" | "uniformNumber" | "team">; target: "weekly" | "daily" }) => {
   const response = await httpClient.post(`/api/admin/player/record?t=${target}`, data);
   return response;
 };
 
-export const getDailyRecords = async (date: string, done: boolean, team: TeamType) => {
-  const response = await httpClient.get<IWeeklyPlayerRecord[]>(`/api/admin/daily/${team}?date=${date}&done=${done}`);
+export const getDailyRecords = async ({ date, isDone, team }: { date: string; isDone: boolean; team: TeamType }) => {
+  const response = await httpClient.get<IWeeklyPlayerRecord[]>(`/api/admin/daily/${team}?date=${date}&done=${isDone}`);
   return response.data;
 };

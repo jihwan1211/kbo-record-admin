@@ -5,6 +5,8 @@ import { FaAlignJustify, FaAngleLeft } from "react-icons/fa";
 import { LayoutStyleProps } from "../layout/layout";
 import { FaRegSquareMinus } from "react-icons/fa6";
 import useSideMenuStore from "../store/SideMenuStore";
+import { useNavigate } from "react-router-dom";
+import { TSecondMenu } from "../store/SideMenuStore";
 
 export type Props = {
   isOpen: boolean;
@@ -13,6 +15,7 @@ export type Props = {
 
 export default function SideHeader({ isOpen, setIsOpen }: Props) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<"week" | "daily" | null>(null);
   const dropdownRef = useRef<HTMLLIElement>(null);
   const { setSecondMenu } = useSideMenuStore();
@@ -34,6 +37,11 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
     setActiveMenu((prevMenu) => (prevMenu === menu ? null : menu));
   };
 
+  const handleNavigate = (path: string, menu: TSecondMenu) => {
+    setSecondMenu(menu);
+    navigate(path);
+  };
+
   return (
     <SideHeaderStyle $isOpen={isOpen}>
       <div className="icon">
@@ -51,17 +59,17 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
           </LiStyle>
           {activeMenu === "week" && (
             <ul className="second-menu">
-              <li onClick={() => setSecondMenu("WEEKLY-TEAM-NOT-ACHIEVED")}>
-                <Link to="/weekly/team/not-achieved">미달성 팀 기록 관리</Link>
+              <li onClick={() => handleNavigate("/weekly/team/not-achieved", "WEEKLY-TEAM-NOT-ACHIEVED")}>
+                <p>미달성 팀 기록 관리</p>
               </li>
-              <li onClick={() => setSecondMenu("WEEKLY-TEAM-ACHIEVED")}>
-                <Link to="/weekly/team/achieved">달성 팀 기록 관리</Link>
+              <li onClick={() => handleNavigate("/weekly/team/achieved", "WEEKLY-TEAM-ACHIEVED")}>
+                <p>달성 팀 기록 관리</p>
               </li>
-              <li onClick={() => setSecondMenu("WEEKLY-PLAYER-NOT-ACHIEVED")}>
-                <Link to="/weekly/player/not-achieved">미달성 개인 기록 관리</Link>
+              <li onClick={() => handleNavigate("/weekly/player/not-achieved", "WEEKLY-PLAYER-NOT-ACHIEVED")}>
+                <p>미달성 개인 기록 관리</p>
               </li>
-              <li onClick={() => setSecondMenu("WEEKLY-PLAYER-ACHIEVED")}>
-                <Link to="/weekly/player/achieved">달성 개인 기록 관리</Link>
+              <li onClick={() => handleNavigate("/weekly/player/achieved", "WEEKLY-PLAYER-ACHIEVED")}>
+                <p>달성 개인 기록 관리</p>
               </li>
             </ul>
           )}
@@ -71,11 +79,11 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
           </LiStyle>
           {activeMenu === "daily" && (
             <ul className="second-menu">
-              <li onClick={() => setSecondMenu("DAILY-NOT-ACHIEVED")}>
-                <Link to="/daily/not-achieved">미달성 기록 관리</Link>
+              <li onClick={() => handleNavigate("/daily/not-achieved", "DAILY-NOT-ACHIEVED")}>
+                <p>미달성 기록 관리</p>
               </li>
-              <li onClick={() => setSecondMenu("DAILY-ACHIEVED")}>
-                <Link to="/daily/achieved">달성 기록 관리</Link>
+              <li onClick={() => handleNavigate("/daily/achieved", "DAILY-ACHIEVED")}>
+                <p>달성 기록 관리</p>
               </li>
             </ul>
           )}
@@ -126,8 +134,7 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-
+      gap: 2px;
       p {
         margin: 0;
       }
@@ -136,13 +143,14 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
 
   .second-menu {
     li {
-      padding: 5px;
+      padding: 10px;
       font-size: 0.85rem;
       cursor: pointer;
-      a {
+      border-radius: ${({ theme }) => theme.borderRadius.default};
+      p {
+        margin: 0;
         top: 0;
         left: 0;
-        text-decoration: none;
         color: white;
       }
     }
