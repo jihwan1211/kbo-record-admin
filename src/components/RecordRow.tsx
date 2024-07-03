@@ -5,8 +5,7 @@ import Checkbox from "./Checkbox";
 import EditRecord from "./EditRecord";
 import { updateAchieve, updateCelebrate } from "@/api/record.api";
 import TeamSelect from "./TeamSelect";
-
-import useEditWeeklyTeamRecord from "../hooks/useEditWeeklyTeamRecord";
+import useEditRecord from "../hooks/useEditRecord";
 import PlayerSearch from "./PlayerSearch";
 
 type Props = {
@@ -18,7 +17,7 @@ type Props = {
 };
 
 export default function RecordRow({ record, date, setDeleteTargets, deleteTargets, target }: Props) {
-  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked } = useEditWeeklyTeamRecord({
+  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked } = useEditRecord({
     record,
     date,
     setDeleteTargets,

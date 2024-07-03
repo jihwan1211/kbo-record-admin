@@ -6,7 +6,7 @@ import useToastStore from "../store/ToastStore";
 import { getMondayDateOfWeek } from "../lib/formatDate";
 import { TPlayer } from "../models/WeeklyPlayerRecord";
 import { FormEventHandler } from "react";
-import useSideMenuStore from "@/store/SideMenuStore";
+import { useLocation } from "react-router-dom";
 
 type Props = {
   onClose: () => void;
@@ -22,7 +22,7 @@ export type newPlayerRecord = {
   achievementDate: string | null;
 };
 
-const useAddWeeklyPlayerRecord = ({ onClose, target }: Props) => {
+const useAddPlayerRecord = ({ onClose, target }: Props) => {
   const queryClient = useQueryClient();
   const [newRecord, setNewRecord] = useState<newPlayerRecord>({
     content: "",
@@ -34,8 +34,8 @@ const useAddWeeklyPlayerRecord = ({ onClose, target }: Props) => {
   });
   const [player, setPlayer] = useState<TPlayer | null>(null);
   const [celebrate, setCelebrate] = useState(false);
-  const { secondMenu } = useSideMenuStore();
   const { addToast } = useToastStore();
+  const location = useLocation();
 
   const handleNewRecordChange = (e: any) => {
     let { name, value } = e.target;
@@ -51,9 +51,9 @@ const useAddWeeklyPlayerRecord = ({ onClose, target }: Props) => {
   const invalidateQueries = () => {
     let queryKey: string[] = [];
     if (target === "weekly") {
-      queryKey = ["weekly", "record", player!.team, "player", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), secondMenu === "WEEKLY-PLAYER-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+      queryKey = ["weekly", "record", player!.team, "player", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
     } else {
-      queryKey = ["daily", "record", player!.team, "player", dayjs(new Date()).format("YYYY-MM-DD"), secondMenu === "DAILY-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+      queryKey = ["daily", "record", player!.team, "player", dayjs(new Date()).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
     }
     queryClient.invalidateQueries({ queryKey });
   };
@@ -93,4 +93,4 @@ const useAddWeeklyPlayerRecord = ({ onClose, target }: Props) => {
   return { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, mutate, handleSubmit };
 };
 
-export default useAddWeeklyPlayerRecord;
+export default useAddPlayerRecord;

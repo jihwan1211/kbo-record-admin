@@ -1,5 +1,5 @@
 import { AddTeamRecordStyle } from "./AddTeamRecord";
-import useAddWeeklyPlayerRecord from "../hooks/useAddWeeklyPlayerRecord";
+import useAddPlayerRecord from "../hooks/useAddPlayerRecord";
 import PlayerSearch from "./PlayerSearch";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function AddPlayerRecord({ onClose, target }: Props) {
-  const { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, handleSubmit } = useAddWeeklyPlayerRecord({ onClose, target });
+  const { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, handleSubmit } = useAddPlayerRecord({ onClose, target });
 
   return (
     <AddTeamRecordStyle onSubmit={handleSubmit}>

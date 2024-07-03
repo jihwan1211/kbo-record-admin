@@ -1,12 +1,8 @@
 import styled from "styled-components";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaAlignJustify, FaAngleLeft } from "react-icons/fa";
 import { LayoutStyleProps } from "../layout/layout";
-import { FaRegSquareMinus } from "react-icons/fa6";
-import useSideMenuStore from "../store/SideMenuStore";
-import { useNavigate } from "react-router-dom";
-import { TSecondMenu } from "../store/SideMenuStore";
 
 export type Props = {
   isOpen: boolean;
@@ -15,32 +11,29 @@ export type Props = {
 
 export default function SideHeader({ isOpen, setIsOpen }: Props) {
   const location = useLocation();
-  const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = useState<"week" | "daily" | null>(null);
-  const dropdownRef = useRef<HTMLLIElement>(null);
-  const { setSecondMenu } = useSideMenuStore();
+  const weeklyRef = useRef<HTMLDetailsElement>(null);
+  const dailyRef = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setActiveMenu(null);
+      if (weeklyRef.current && weeklyRef.current.contains(e.target as Node)) {
+        // 열린다는 것
+        if (!weeklyRef.current.open) {
+          if (dailyRef.current) dailyRef.current.removeAttribute("open");
+        }
+      }
+      if (dailyRef.current && dailyRef.current.contains(e.target as Node)) {
+        // 열린다는 것
+        if (!dailyRef.current.open) {
+          if (weeklyRef.current) weeklyRef.current.removeAttribute("open");
+        }
       }
     }
     document.addEventListener("click", handleOutsideClick);
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
-  }, [dropdownRef]);
-
-  const handleMenuClick = (menu: "week" | "daily", e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    e.stopPropagation();
-    setActiveMenu((prevMenu) => (prevMenu === menu ? null : menu));
-  };
-
-  const handleNavigate = (path: string, menu: TSecondMenu) => {
-    setSecondMenu(menu);
-    navigate(path);
-  };
+  }, []);
 
   return (
     <SideHeaderStyle $isOpen={isOpen}>
@@ -51,44 +44,36 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
         </div>
       </div>
 
-      <div className="link">
-        <ul>
-          <LiStyle className="weekly" $isActive={location.pathname.includes("/weekly")} onClick={(e) => handleMenuClick("week", e)} ref={dropdownRef}>
-            <p>주간 기록 관리</p>
-            {activeMenu === "week" && <FaRegSquareMinus />}
-          </LiStyle>
-          {activeMenu === "week" && (
-            <ul className="second-menu">
-              <li onClick={() => handleNavigate("/weekly/team/not-achieved", "WEEKLY-TEAM-NOT-ACHIEVED")}>
-                <p>미달성 팀 기록 관리</p>
-              </li>
-              <li onClick={() => handleNavigate("/weekly/team/achieved", "WEEKLY-TEAM-ACHIEVED")}>
-                <p>달성 팀 기록 관리</p>
-              </li>
-              <li onClick={() => handleNavigate("/weekly/player/not-achieved", "WEEKLY-PLAYER-NOT-ACHIEVED")}>
-                <p>미달성 개인 기록 관리</p>
-              </li>
-              <li onClick={() => handleNavigate("/weekly/player/achieved", "WEEKLY-PLAYER-ACHIEVED")}>
-                <p>달성 개인 기록 관리</p>
-              </li>
-            </ul>
-          )}
-          <LiStyle className="daily" $isActive={location.pathname.includes("/daily")} onClick={(e) => handleMenuClick("daily", e)} ref={dropdownRef}>
-            <p>일간 기록 관리</p>
-            {activeMenu === "daily" && <FaRegSquareMinus />}
-          </LiStyle>
-          {activeMenu === "daily" && (
-            <ul className="second-menu">
-              <li onClick={() => handleNavigate("/daily/not-achieved", "DAILY-NOT-ACHIEVED")}>
-                <p>미달성 기록 관리</p>
-              </li>
-              <li onClick={() => handleNavigate("/daily/achieved", "DAILY-ACHIEVED")}>
-                <p>달성 기록 관리</p>
-              </li>
-            </ul>
-          )}
-        </ul>
-      </div>
+      <nav>
+        <DetailStyle $isActive={location.pathname.includes("/weekly")} ref={weeklyRef}>
+          <summary>주간 기록 관리</summary>
+          <ul>
+            <li>
+              <Link to="/weekly/team/not-achieved">미달성 팀 기록 관리</Link>
+            </li>
+            <li>
+              <Link to="/weekly/team/achieved">달성 팀 기록 관리</Link>
+            </li>
+            <li>
+              <Link to="/weekly/player/not-achieved">미달성 개인 기록 관리</Link>
+            </li>
+            <li>
+              <Link to="/weekly/player/achieved">달성 개인 기록 관리</Link>
+            </li>
+          </ul>
+        </DetailStyle>
+        <DetailStyle $isActive={location.pathname.includes("/daily")} ref={dailyRef}>
+          <summary>일간 기록 관리</summary>
+          <ul>
+            <li>
+              <Link to="/daily/not-achieved">미달성 개인 기록 관리</Link>
+            </li>
+            <li>
+              <Link to="/daily/achieved">달성 개인 기록 관리</Link>
+            </li>
+          </ul>
+        </DetailStyle>
+      </nav>
     </SideHeaderStyle>
   );
 }
@@ -109,6 +94,15 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
   flex-direction: column;
   align-items: flex-start;
 
+  nav {
+    width: 100%;
+    margin-top: 25px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .icon {
     position: absolute;
     top: 10px;
@@ -121,73 +115,67 @@ const SideHeaderStyle = styled.div<LayoutStyleProps>`
       fill: ${({ theme }) => theme.menu.color};
     }
   }
-
-  .link {
-    width: 100%;
-    margin-top: 25px;
-    font-weight: 600;
-    ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      p {
-        margin: 0;
-      }
-    }
-  }
-
-  .second-menu {
-    li {
-      padding: 10px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      border-radius: ${({ theme }) => theme.borderRadius.default};
-      p {
-        margin: 0;
-        top: 0;
-        left: 0;
-        color: white;
-      }
-    }
-
-    li:hover {
-      background-color: ${({ theme }) => theme.menu.hoverBackgroundColor};
-    }
-  }
 `;
 
-type LiStyleProps = {
+type DetailStyleProps = {
   $isActive?: boolean;
 };
 
-const LiStyle = styled.li<LiStyleProps>`
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  cursor: pointer;
-  border-radius: ${({ theme }) => theme.borderRadius.default};
-  background-color: ${({ $isActive, theme }) => ($isActive ? theme.menu.color : theme.menu.backgroundColor)};
-
+const DetailStyle = styled.details<DetailStyleProps>`
+  display: flex;
   position: relative;
-  svg {
-    z-index: 1000;
+  color: ${({ $isActive, theme }) => ($isActive ? theme.menu.backgroundColor : theme.menu.color)};
+  &::after {
+    content: "+";
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 10px;
-    fill: ${({ $isActive, theme }) => ($isActive ? theme.menu.backgroundColor : theme.menu.color)};
+    top: 17px;
+    right: 5px;
   }
 
-  &:hover {
-    background-color: ${({ $isActive, theme }) => ($isActive ? "" : theme.menu.hoverBackgroundColor)};
+  &[open]::after {
+    content: "-";
+    position: absolute;
+    top: 17px;
+    right: 5px;
   }
 
-  p {
-    color: ${({ $isActive, theme }) => ($isActive ? theme.menu.backgroundColor : theme.menu.color)};
+  ul {
+    margin: 0;
+
+    li {
+      font-size: 0.85rem;
+      cursor: pointer;
+      border-radius: ${({ theme }) => theme.borderRadius.default};
+
+      &:hover {
+        background-color: ${({ theme }) => theme.menu.hoverBackgroundColor};
+      }
+      a {
+        text-align: end;
+        padding: 10px;
+        display: block;
+        text-decoration: none;
+        color: white;
+      }
+    }
+  }
+
+  summary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    border-radius: ${({ theme }) => theme.borderRadius.default};
+    background-color: ${({ $isActive, theme }) => ($isActive ? theme.menu.color : theme.menu.backgroundColor)};
+    color: inherit;
+
+    &:hover {
+      background-color: ${({ $isActive, theme }) => ($isActive ? "" : theme.menu.hoverBackgroundColor)};
+    }
   }
 `;

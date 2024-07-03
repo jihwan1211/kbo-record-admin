@@ -6,8 +6,8 @@ import { getMondayDateOfWeek } from "../lib/formatDate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateRecord } from "@/api/record.api";
 import useToastStore from "../store/ToastStore";
-import useSideMenuStore from "../store/SideMenuStore";
 import { TPlayer } from "@/models/WeeklyPlayerRecord";
+import { useLocation } from "react-router-dom";
 
 type Props = {
   record: IWeeklyTeamRecord | IWeeklyPlayerRecord;
@@ -17,7 +17,7 @@ type Props = {
   target: "daily" | "weekly";
 };
 
-const useEditWeeklyTeamRecord = ({ record, date, setDeleteTargets, deleteTargets, target }: Props) => {
+const useEditRecord = ({ record, date, setDeleteTargets, deleteTargets, target }: Props) => {
   const queryClient = useQueryClient();
   const [recordState, setRecordState] = useState<Omit<IWeeklyTeamRecord, "id" | "achieve" | "celebrate">>({ ...record });
   const [celebrate, setCelebrate] = useState(record.celebrate);
@@ -25,7 +25,7 @@ const useEditWeeklyTeamRecord = ({ record, date, setDeleteTargets, deleteTargets
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [player, setPlayer] = useState<TPlayer | null>(() => ("playerId" in record ? { id: record.playerId, player: record.player, team: record.team, uniformNumber: record.uniformNumber } : null));
   const { addToast } = useToastStore();
-  const { secondMenu } = useSideMenuStore();
+  const location = useLocation();
 
   const handleInputChange = (e: any) => {
     let { name, value } = e.target;
@@ -54,10 +54,10 @@ const useEditWeeklyTeamRecord = ({ record, date, setDeleteTargets, deleteTargets
     let queryKey: string[] = [];
     if (target === "weekly") {
       if ("playerId" in recordState)
-        queryKey = ["weekly", "record", recordState.team, "player", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), secondMenu === "WEEKLY-PLAYER-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
-      else queryKey = ["weekly", "record", "team", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), secondMenu === "WEEKLY-TEAM-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+        queryKey = ["weekly", "record", recordState.team, "player", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
+      else queryKey = ["weekly", "record", "team", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
     } else {
-      queryKey = ["daily", "record", recordState.team, "player", dayjs(date).format("YYYY-MM-DD"), secondMenu === "DAILY-ACHIEVED" ? "ACHIEVED" : "NOT-ACHIEVED"];
+      queryKey = ["daily", "record", recordState.team, "player", dayjs(date).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
     }
     queryClient.invalidateQueries({ queryKey });
   };
@@ -77,4 +77,4 @@ const useEditWeeklyTeamRecord = ({ record, date, setDeleteTargets, deleteTargets
   return { player, setPlayer, isEditing, recordState, celebrate, achieve, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked };
 };
 
-export default useEditWeeklyTeamRecord;
+export default useEditRecord;
