@@ -6,8 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { theme } from "./style/theme.ts";
 import Layout from "./layout/layout.tsx";
 import { GlobalStyle } from "./style/global.ts";
-
-import Daily from "./pages/Daily.tsx";
 import Login from "./pages/Login.tsx";
 import ToastContainer from "./components/ToastContainer.tsx";
 import WeeklyTeamNotAchieved from "./pages/WeeklyTeamNotAchieved.tsx";
