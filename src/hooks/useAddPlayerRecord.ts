@@ -29,7 +29,7 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
     accSum: "",
     remain: "",
     remark: 1,
-    createdAt: dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"),
+    createdAt: target === "weekly" ? dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD") : dayjs(new Date()).format("YYYY-MM-DD"),
     achievementDate: null,
   });
   const [player, setPlayer] = useState<TPlayer | null>(null);
@@ -66,6 +66,7 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
           ...newRecord,
           celebrate,
           achieve: false,
+          isFail: false,
         },
         target,
       }),

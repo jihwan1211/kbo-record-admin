@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function RecordRow({ record, date, setDeleteTargets, deleteTargets, target }: Props) {
-  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked, isFail, setIsFail } = useEditRecord({
+  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked, setIsFail } = useEditRecord({
     record,
     date,
     setDeleteTargets,
