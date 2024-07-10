@@ -27,6 +27,11 @@ export const updateCelebrate = async ({ mode, id, target, flag }: UpdateWeeklyBo
   return response;
 };
 
+export const updateIsFail = async ({ id, flag }: { id: number; flag: boolean }) => {
+  const response = await httpClient.put(`/api/admin/record/fail?id=${id}&fail=${flag}`);
+  return response;
+};
+
 export const updateRecord = async ({ data, target, mode }: { data: IWeeklyTeamRecord | IWeeklyPlayerRecord; target: "weekly" | "daily"; mode?: "team" | "player" }) => {
   const url = `/api/admin/record?t=${target}${mode ? `&m=${mode}` : ""}`;
   const response = await httpClient.put(url, data);
