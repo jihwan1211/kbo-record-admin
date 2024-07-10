@@ -1,6 +1,5 @@
 import { TeamType } from "./team";
-
-export interface IWeeklyPlayerRecord {
+export interface IDailyPlayerRecord {
   id: number;
   content: string;
   accSum: string;
@@ -8,18 +7,11 @@ export interface IWeeklyPlayerRecord {
   remark: number;
   celebrate: boolean;
   achieve: boolean;
+  isFail: boolean;
   createdAt: string;
   achievementDate: string | null;
   playerId: number;
   player: string;
   team: TeamType;
   uniformNumber: number;
-  isFail?: boolean;
 }
-
-export type TPlayer = {
-  id: number;
-  player: string;
-  team: TeamType;
-  uniformNumber: number;
-};

@@ -3,7 +3,7 @@ import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
 import { IWeeklyPlayerRecord } from "@/models/WeeklyPlayerRecord";
 import Checkbox from "./Checkbox";
 import EditRecord from "./EditRecord";
-import { updateAchieve, updateCelebrate } from "@/api/record.api";
+import { updateAchieve, updateCelebrate, updateIsFail } from "@/api/record.api";
 import TeamSelect from "./TeamSelect";
 import useEditRecord from "../hooks/useEditRecord";
 import PlayerSearch from "./PlayerSearch";
@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function RecordRow({ record, date, setDeleteTargets, deleteTargets, target }: Props) {
-  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked } = useEditRecord({
+  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked, isFail, setIsFail } = useEditRecord({
     record,
     date,
     setDeleteTargets,
@@ -53,6 +53,11 @@ export default function RecordRow({ record, date, setDeleteTargets, deleteTarget
       <td>
         <Checkbox stateProps={record.achieve} setState={setAchieve} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateAchieve} target={target} />
       </td>
+      {"isFail" in record && record.isFail !== undefined && (
+        <td>
+          <Checkbox stateProps={record.isFail} setState={setIsFail} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateIsFail} target={target} />
+        </td>
+      )}
       <td>{isEditing ? <input type="date" name="createdAt" value={recordState.createdAt} onChange={(e) => handleInputChange(e)} /> : record.createdAt}</td>
       <EditRecord isEditing={isEditing} setIsEditing={setIsEditing} handleRecordChange={mutation.mutate} />
     </RecordTrStyle>

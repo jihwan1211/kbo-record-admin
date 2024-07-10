@@ -25,7 +25,8 @@ export default function RecordTable({ records, date, deleteTargets, setDeleteTar
             <td>잔여기록</td>
             <td>비고</td>
             <td>시상여부</td>
-            <td>달성여부</td>
+            <td>달성완료</td>
+            {"isFail" in records[0] && <td>달성 실패</td>}
             <td>created_at</td>
           </tr>
         </thead>

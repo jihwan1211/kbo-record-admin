@@ -22,6 +22,10 @@ const useEditRecord = ({ record, date, setDeleteTargets, deleteTargets, target }
   const [recordState, setRecordState] = useState<Omit<IWeeklyTeamRecord, "id" | "achieve" | "celebrate">>({ ...record });
   const [celebrate, setCelebrate] = useState(record.celebrate);
   const [achieve, setAchieve] = useState(record.achieve);
+  const [isFail, setIsFail] = useState<boolean>(() => {
+    return "isFail" in record ? record.isFail ?? false : false;
+  });
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [player, setPlayer] = useState<TPlayer | null>(() => ("playerId" in record ? { id: record.playerId, player: record.player, team: record.team, uniformNumber: record.uniformNumber } : null));
   const { addToast } = useToastStore();
@@ -74,7 +78,7 @@ const useEditRecord = ({ record, date, setDeleteTargets, deleteTargets, target }
     },
   });
 
-  return { player, setPlayer, isEditing, recordState, celebrate, achieve, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked };
+  return { player, setPlayer, isEditing, recordState, celebrate, achieve, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked, isFail, setIsFail };
 };
 
 export default useEditRecord;
