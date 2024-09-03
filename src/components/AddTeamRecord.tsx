@@ -34,7 +34,7 @@ export default function AddTeamRecord({ onClose }: AddRecordProps) {
         </li>
         <li>
           <p>시상 여부</p>
-          <input type="checkbox" checked={celebrate} onChange={() => setCelebrate(!celebrate)} />
+          <input type="checkbox" checked={isCelebrated} onChange={() => setCelebrate(!isCelebrated)} />
         </li>
         <li>
           <p>날짜</p>

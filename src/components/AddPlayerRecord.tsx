@@ -9,7 +9,7 @@ type Props = {
 
 export default function AddPlayerRecord({ onClose }: Props) {
   const { target } = useTargetModeStore();
-  const { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, handleSubmit } = useAddPlayerRecord({ onClose, target });
+  const { newRecord, handleNewRecordChange, isCelebrated, setCelebrate, player, setPlayer, handleSubmit } = useAddPlayerRecord({ onClose, target });
 
   return (
     <AddTeamRecordStyle onSubmit={handleSubmit}>
@@ -36,7 +36,7 @@ export default function AddPlayerRecord({ onClose }: Props) {
         </li>
         <li>
           <p>시상 여부</p>
-          <input type="checkbox" checked={celebrate} onChange={() => setCelebrate(!celebrate)} />
+          <input type="checkbox" checked={isCelebrated} onChange={() => setCelebrate(!isCelebrated)} />
         </li>
         <li>
           <p>날짜</p>
