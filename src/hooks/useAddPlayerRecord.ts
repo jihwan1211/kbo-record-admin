@@ -33,7 +33,7 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
     achievementDate: null,
   });
   const [player, setPlayer] = useState<TPlayer | null>(null);
-  const [celebrate, setCelebrate] = useState(false);
+  const [isCelebrated, setCelebrate] = useState(false);
   const { addToast } = useToastStore();
   const location = useLocation();
 
@@ -64,9 +64,9 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
         data: {
           playerId: player?.id as number,
           ...newRecord,
-          celebrate,
-          achieve: false,
-          isFail: false,
+          isCelebrated,
+          isAchieved: false,
+          // isFail: false,
         },
         target,
       }),
@@ -91,7 +91,7 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
     });
   };
 
-  return { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, mutate, handleSubmit };
+  return { newRecord, handleNewRecordChange, isCelebrated, setCelebrate, player, setPlayer, mutate, handleSubmit };
 };
 
 export default useAddPlayerRecord;

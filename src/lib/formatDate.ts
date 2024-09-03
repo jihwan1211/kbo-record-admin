@@ -1,4 +1,4 @@
-import { DateValue } from "@/hooks/useWeekCalendar";
+import { DateValue } from "@/store/DateStore";
 import dayjs from "dayjs";
 
 // 날짜를 빼는 함수

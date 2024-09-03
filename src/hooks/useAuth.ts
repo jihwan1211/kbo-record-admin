@@ -17,7 +17,7 @@ const useAuth = () => {
         navigate("/");
         window.location.reload();
       },
-      (error) => {
+      (_error) => {
         setIsLoginFailed(true);
       }
     );

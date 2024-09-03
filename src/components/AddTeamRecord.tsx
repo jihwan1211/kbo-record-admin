@@ -7,7 +7,7 @@ export type AddRecordProps = {
 };
 
 export default function AddTeamRecord({ onClose }: AddRecordProps) {
-  const { newRecord, handleNewRecordChange, celebrate, setCelebrate, handleSubmit } = useAddTeamRecord(onClose);
+  const { newRecord, handleNewRecordChange, isCelebrated, setCelebrate, handleSubmit } = useAddTeamRecord(onClose);
 
   return (
     <AddTeamRecordStyle onSubmit={handleSubmit}>

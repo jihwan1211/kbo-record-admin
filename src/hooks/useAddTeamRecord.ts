@@ -8,7 +8,7 @@ import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
 
 const useAddTeamRecord = (onClose: () => void) => {
   const queryClient = useQueryClient();
-  const [newRecord, setNewRecord] = useState<Omit<IWeeklyTeamRecord, "id" | "achieve" | "celebrate">>({
+  const [newRecord, setNewRecord] = useState<Omit<IWeeklyTeamRecord, "id" | "isAchieved" | "isCelebrated">>({
     team: "SSG",
     content: "",
     accSum: "",
@@ -17,7 +17,7 @@ const useAddTeamRecord = (onClose: () => void) => {
     createdAt: dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"),
     achievementDate: null,
   });
-  const [celebrate, setCelebrate] = useState(false);
+  const [isCelebrated, setCelebrate] = useState(false);
   const { addToast } = useToastStore();
 
   const handleNewRecordChange = (e: any) => {
@@ -34,8 +34,8 @@ const useAddTeamRecord = (onClose: () => void) => {
     mutationFn: async () =>
       postNewWeeklyTeamRecord({
         ...newRecord,
-        celebrate,
-        achieve: false,
+        isCelebrated,
+        isAchieved: false,
       }),
     onError: (error) => {
       addToast({ message: `${error}, 팀 기록 저장에 실패하였습니다.`, type: "error" });
@@ -53,7 +53,7 @@ const useAddTeamRecord = (onClose: () => void) => {
     });
   };
 
-  return { newRecord, handleNewRecordChange, celebrate, setCelebrate, handleSubmit };
+  return { newRecord, handleNewRecordChange, isCelebrated, setCelebrate, handleSubmit };
 };
 
 export default useAddTeamRecord;

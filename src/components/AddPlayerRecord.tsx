@@ -1,13 +1,14 @@
 import { AddTeamRecordStyle } from "./AddTeamRecord";
 import useAddPlayerRecord from "../hooks/useAddPlayerRecord";
 import PlayerSearch from "./PlayerSearch";
+import useTargetModeStore from "@/store/TargetModeStore";
 
 type Props = {
   onClose: () => void;
-  target: "weekly" | "daily";
 };
 
-export default function AddPlayerRecord({ onClose, target }: Props) {
+export default function AddPlayerRecord({ onClose }: Props) {
+  const { target } = useTargetModeStore();
   const { newRecord, handleNewRecordChange, celebrate, setCelebrate, player, setPlayer, handleSubmit } = useAddPlayerRecord({ onClose, target });
 
   return (

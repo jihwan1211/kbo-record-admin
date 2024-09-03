@@ -10,17 +10,15 @@ type Props = {
 };
 
 const useAddPlayer = ({ onClose }: Props) => {
-  const [player, setPlayer] = useState<{ team: TeamType; player: string; uniformNumber: number }>({
+  const [player, setPlayer] = useState<{ team: TeamType; player: string; uniformNumber: string }>({
     team: "SSG",
     player: "",
-    uniformNumber: -1,
+    uniformNumber: "",
   });
   const { addToast } = useToastStore();
 
   const handleNewPlayerChange = (e: any) => {
     let { name, value } = e.target;
-    console.log(name);
-    console.log(value);
     setPlayer((prevState) => ({
       ...prevState,
       [name]: value,

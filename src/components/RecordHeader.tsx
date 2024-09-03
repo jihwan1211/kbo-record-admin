@@ -55,7 +55,7 @@ export default function RecordHeader({ title, children }: Props) {
           <AddTeamRecord onClose={() => setModalMenu(null)} />
         ) : (
           <>
-            {modalMenu === "record-register" && <AddPlayerRecord onClose={() => setModalMenu(null)} target={target} />}
+            {modalMenu === "record-register" && <AddPlayerRecord onClose={() => setModalMenu(null)} />}
             {modalMenu === "player-register" && <AddPlayer onClose={() => setModalMenu(null)} />}
           </>
         )}
