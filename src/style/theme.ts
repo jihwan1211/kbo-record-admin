@@ -1,5 +1,5 @@
-type LayoutWidth = "pc" | "tablet" | "mobile";
-type ColorKey = "menuBackground";
+type LayoutWidth = "large" | "medium" | "small";
+type ColorKey = "menuBackground" | "error" | "success" | "disabled";
 
 interface Theme {
   color: {
@@ -23,6 +23,9 @@ interface Theme {
 export const theme: Theme = {
   color: {
     menuBackground: "#2c3539",
+    error: "#DC143C",
+    success: "#32cd32",
+    disabled: "#C0C0C0",
   },
   borderRadius: {
     default: "4px",
@@ -34,9 +37,9 @@ export const theme: Theme = {
   },
   layout: {
     width: {
-      pc: "1024px",
-      tablet: "768px",
-      mobile: "375px",
+      large: "1020px",
+      medium: "760px",
+      small: "320px",
     },
   },
 };
