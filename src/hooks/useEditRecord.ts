@@ -8,23 +8,22 @@ import { updateRecord } from "@/api/record.api";
 import useToastStore from "../store/ToastStore";
 import { TPlayer } from "@/models/WeeklyPlayerRecord";
 import { useLocation } from "react-router-dom";
+import useDateStore from "@/store/DateStore";
+import useTargetModeStore from "@/store/TargetModeStore";
+import useDeleteRecordStore from "@/store/DeleteRecordStore";
 
 type Props = {
   record: IWeeklyTeamRecord | IWeeklyPlayerRecord;
-  date: Date;
-  setDeleteTargets: React.Dispatch<React.SetStateAction<number[]>>;
-  deleteTargets: number[];
-  target: "daily" | "weekly";
 };
 
-const useEditRecord = ({ record, date, setDeleteTargets, deleteTargets, target }: Props) => {
+const useEditRecord = ({ record }: Props) => {
   const queryClient = useQueryClient();
+  const { target, mode } = useTargetModeStore();
+  const { date } = useDateStore();
+  const { setDeleteTargets, deleteTargets } = useDeleteRecordStore();
   const [recordState, setRecordState] = useState<Omit<IWeeklyTeamRecord, "id" | "achieve" | "celebrate">>({ ...record });
-  const [celebrate, setCelebrate] = useState(record.celebrate);
-  const [achieve, setAchieve] = useState(record.achieve);
-  const [isFail, setIsFail] = useState<boolean>(() => {
-    return "isFail" in record ? record.isFail ?? false : false;
-  });
+  const [celebrate, setCelebrate] = useState(record.isCelebrated);
+  const [achieve, setAchieve] = useState(record.isAchieved);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [player, setPlayer] = useState<TPlayer | null>(() => ("playerId" in record ? { id: record.playerId, player: record.player, team: record.team, uniformNumber: record.uniformNumber } : null));
@@ -42,33 +41,31 @@ const useEditRecord = ({ record, date, setDeleteTargets, deleteTargets, target }
     }));
   };
 
-  const handleDeleteTarget = () => {
-    setDeleteTargets((prev) => {
-      if (prev.includes(record.id)) {
-        return prev.filter((id) => id !== record.id);
-      } else {
-        return [...prev, record.id];
-      }
-    });
-  };
-
   const isDeleteChecked = (id: number) => deleteTargets.includes(id);
 
   const invalidateQueries = () => {
     let queryKey: string[] = [];
     if (target === "weekly") {
-      if ("playerId" in recordState)
+      if (mode === "player")
         queryKey = ["weekly", "record", recordState.team, "player", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
       else queryKey = ["weekly", "record", "team", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
     } else {
-      queryKey = ["daily", "record", recordState.team, "player", dayjs(date).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
+      queryKey = ["daily", "record", recordState.team, "player", dayjs(date as Date).format("YYYY-MM-DD"), location.pathname.includes("not-achieved") ? "NOT-ACHIEVED" : "ACHIEVED"];
     }
     queryClient.invalidateQueries({ queryKey });
   };
 
   const mutation = useMutation({
-    mutationFn: async () => updateRecord({ data: { id: record.id, celebrate, achieve, ...recordState, playerId: player?.id }, target, mode: "playerId" in recordState ? "player" : "team" }),
-    onSuccess: (response) => {
+    mutationFn: async () => {
+      if ("playerId" in recordState) {
+        const data = { id: record.id, celebrate, achieve, ...recordState, playerId: player?.id };
+        return updateRecord({ data, target, mode });
+      } else {
+        const data = { id: record.id, celebrate, achieve, ...recordState };
+        return updateRecord({ data, target, mode });
+      }
+    },
+    onSuccess: (_response) => {
       invalidateQueries();
       addToast({ message: `${record.team} 기록 변경에 성공하였습니다.`, type: "info" });
       setIsEditing(false);
@@ -78,7 +75,7 @@ const useEditRecord = ({ record, date, setDeleteTargets, deleteTargets, target }
     },
   });
 
-  return { player, setPlayer, isEditing, recordState, celebrate, achieve, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked, isFail, setIsFail };
+  return { player, setPlayer, isEditing, recordState, celebrate, achieve, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, setDeleteTargets, isDeleteChecked };
 };
 
 export default useEditRecord;

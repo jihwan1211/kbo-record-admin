@@ -2,19 +2,21 @@ import { useReducer } from "react";
 import useToastStore from "../store/ToastStore";
 import { UpdateWeeklyBooleanProps } from "../api/record.api";
 import { useMutation } from "@tanstack/react-query";
+import useTargetModeStore from "@/store/TargetModeStore";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   stateProps: boolean;
   setState: React.Dispatch<React.SetStateAction<boolean>>;
   recordId: number;
   mode: "team" | "player";
-  target: "weekly" | "daily";
+
   apiFunction: (props: UpdateWeeklyBooleanProps) => Promise<any>;
 }
 
-export default function Checkbox({ stateProps, setState, recordId, mode, apiFunction, target, ...props }: Props) {
+export default function Checkbox({ stateProps, setState, recordId, mode, apiFunction, ...props }: Props) {
   const [isboolean, toggleIsBoolean] = useReducer((state) => !state, stateProps || false);
   const { addToast } = useToastStore();
+  const { target } = useTargetModeStore();
 
   const { mutate } = useMutation({
     mutationFn: async () => apiFunction({ mode, id: recordId, flag: !isboolean, target }),

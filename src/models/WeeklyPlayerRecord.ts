@@ -6,20 +6,19 @@ export interface IWeeklyPlayerRecord {
   accSum: string;
   remain: string;
   remark: number;
-  celebrate: boolean;
-  achieve: boolean;
+  isCelebrated: boolean;
+  isAchieved: boolean;
   createdAt: string;
   achievementDate: string | null;
   playerId: number;
   player: string;
   team: TeamType;
-  uniformNumber: number;
-  isFail?: boolean;
+  uniformNumber: string;
 }
 
 export type TPlayer = {
   id: number;
   player: string;
   team: TeamType;
-  uniformNumber: number;
+  uniformNumber: string;
 };

@@ -6,17 +6,19 @@ import AddPlayerRecord from "./AddPlayerRecord";
 import AddTeamRecord from "./AddTeamRecord";
 import { useLocation } from "react-router-dom";
 import AddPlayer from "./AddPlayer";
+import useRecordDelete from "@/hooks/useRecordDelete";
+import useTargetModeStore from "@/store/TargetModeStore";
 
 type Props = {
   title: string;
-  handleRecordDelete: () => void;
   children: React.ReactNode;
-  target: "weekly" | "daily";
 };
 
-export default function RecordHeader({ title, handleRecordDelete, children, target }: Props) {
+export default function RecordHeader({ title, children }: Props) {
+  const { target } = useTargetModeStore();
   const [modalMenu, setModalMenu] = useState<"record-register" | "record-delete" | "player-register" | null>(null);
   const location = useLocation();
+  const { handleRecordDelete } = useRecordDelete();
 
   return (
     <RecordHeaderStyle>

@@ -3,6 +3,7 @@ import { useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaAlignJustify, FaAngleLeft } from "react-icons/fa";
 import { LayoutStyleProps } from "../layout/layout";
+import useTargetModeStore from "@/store/TargetModeStore";
 
 export type Props = {
   isOpen: boolean;
@@ -10,6 +11,7 @@ export type Props = {
 };
 
 export default function SideHeader({ isOpen, setIsOpen }: Props) {
+  const { setTargetModeState } = useTargetModeStore();
   const location = useLocation();
   const weeklyRef = useRef<HTMLDetailsElement>(null);
   const dailyRef = useRef<HTMLDetailsElement>(null);
@@ -35,6 +37,10 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
     };
   }, []);
 
+  const handleClick = (target: "weekly" | "daily", mode: "team" | "player") => {
+    setTargetModeState(target, mode);
+  };
+
   return (
     <SideHeaderStyle $isOpen={isOpen}>
       <div className="icon">
@@ -48,16 +54,16 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
         <DetailStyle $isActive={location.pathname.includes("/weekly")} ref={weeklyRef}>
           <summary>주간 기록 관리</summary>
           <ul>
-            <li>
+            <li onClick={() => handleClick("weekly", "team")}>
               <Link to="/weekly/team/not-achieved">미달성 팀 기록 관리</Link>
             </li>
-            <li>
+            <li onClick={() => handleClick("weekly", "team")}>
               <Link to="/weekly/team/achieved">달성 팀 기록 관리</Link>
             </li>
-            <li>
+            <li onClick={() => handleClick("weekly", "player")}>
               <Link to="/weekly/player/not-achieved">미달성 개인 기록 관리</Link>
             </li>
-            <li>
+            <li onClick={() => handleClick("weekly", "player")}>
               <Link to="/weekly/player/achieved">달성 개인 기록 관리</Link>
             </li>
           </ul>
@@ -65,10 +71,10 @@ export default function SideHeader({ isOpen, setIsOpen }: Props) {
         <DetailStyle $isActive={location.pathname.includes("/daily")} ref={dailyRef}>
           <summary>일간 기록 관리</summary>
           <ul>
-            <li>
+            <li onClick={() => handleClick("daily", "player")}>
               <Link to="/daily/not-achieved">미달성 개인 기록 관리</Link>
             </li>
-            <li>
+            <li onClick={() => handleClick("daily", "player")}>
               <Link to="/daily/achieved">달성 개인 기록 관리</Link>
             </li>
           </ul>

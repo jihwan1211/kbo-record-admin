@@ -1,36 +1,47 @@
-import MyCalendar from "@components/MyCalender";
-import useDailyCalendar from "@/hooks/useDailyCalendar";
-import { WeeklyStyle } from "./WeeklyTeamNotAchieved";
+import { RecordTableStyle } from "./WeeklyTeamNotAchieved";
 import { useState } from "react";
 import { TeamType } from "@/models/team";
 import TeamSelect from "@components/TeamSelect";
-import useRecordDelete from "@/hooks/useRecordDelete";
-import dayjs from "dayjs";
-import RecordHeader from "@components/RecordHeader";
-import RecordTable from "@components/RecordTable";
 import useDailyNotAchievedRecord from "@/hooks/useQuery/useDailyNotAchievedRecord";
+import { StyledTeamSelect } from "./WeeklyPlayerNotAchieved";
+import RecordRow from "@components/RecordRow";
 
 export default function DailyNotAchieved() {
   const [team, setTeam] = useState<TeamType>("SSG");
-  const { handleDateClick, setDate, date } = useDailyCalendar();
-  const { data } = useDailyNotAchievedRecord(date as Date, team);
-  const { deleteTargets, setDeleteTargets, handleRecordDelete } = useRecordDelete({
-    target: "daily",
-    queryKey: ["daily", "record", team, "player", dayjs(new Date()).format("YYYY-MM-DD"), "NOT-ACHIEVED"],
-  });
-  if (!data) return null;
+  const { data } = useDailyNotAchievedRecord(team);
+  const records = data ?? [];
   return (
-    <WeeklyStyle>
-      <div className="data">
-        <RecordHeader title="미달성 개인 기록 관리" handleRecordDelete={handleRecordDelete} target="daily">
-          <RecordTable records={data} date={date as Date} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} target="daily" />
-        </RecordHeader>
-      </div>
-      <div className="select-team">
+    <>
+      <StyledTeamSelect>
         <p>팀 선택 : </p>
         <TeamSelect team={team} setTeam={(e) => setTeam(e.target.value as TeamType)} />
-      </div>
-      <MyCalendar handleDateClick={handleDateClick} setDate={setDate} date={date} />
-    </WeeklyStyle>
+      </StyledTeamSelect>
+      <RecordTableStyle>
+        {records.length === 0 ? (
+          <div>데이터가 없습니다</div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <td>삭제</td>
+                {"playerId" in records[0] ? <td>선수</td> : <td>팀명</td>}
+                <td>기록명</td>
+                <td>누적기록</td>
+                <td>잔여기록</td>
+                <td>비고</td>
+                <td>시상여부</td>
+                <td>달성완료</td>
+                <td>created_at</td>
+              </tr>
+            </thead>
+            <tbody>
+              {records.map((record) => (
+                <RecordRow key={record.id} record={record} />
+              ))}
+            </tbody>
+          </table>
+        )}
+      </RecordTableStyle>
+    </>
   );
 }

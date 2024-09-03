@@ -1,40 +1,47 @@
 import { useState } from "react";
-import { WeeklyStyle } from "./WeeklyTeamNotAchieved";
-import RecordHeader from "../components/RecordHeader";
-import MyCalendar from "../components/MyCalender";
-import useWeekCalendar from "../hooks/useWeekCalendar";
+import { RecordTableStyle } from "./WeeklyTeamNotAchieved";
 import TeamSelect from "../components/TeamSelect";
 import { TeamType } from "../models/team";
-import useRecordDelete from "../hooks/useRecordDelete";
-import dayjs from "dayjs";
-import { getMondayDateOfWeek } from "../lib/formatDate";
-import RecordTable from "@components/RecordTable";
 import useWeeklyPlayerAchievedRecord from "@/hooks/useQuery/useWeeklyPlayerAchievedRecord";
+import { StyledTeamSelect } from "./WeeklyPlayerNotAchieved";
+import RecordRow from "@components/RecordRow";
 
 export default function WeeklyPlayerAchieved() {
   const [team, setTeam] = useState<TeamType>("SSG");
-  const { handleDateClick, setDate, mondayOfWeek, dateRange, date } = useWeekCalendar();
-  const { data } = useWeeklyPlayerAchievedRecord(mondayOfWeek, team);
-  const { deleteTargets, setDeleteTargets, handleRecordDelete } = useRecordDelete({
-    target: "weekly",
-    mode: "player",
-    queryKey: ["weekly", "record", team, "player", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "ACHIEVED"],
-  });
-
-  if (!data) return null;
-
+  const { data } = useWeeklyPlayerAchievedRecord(team);
+  const records = data ?? [];
   return (
-    <WeeklyStyle>
-      <div className="data">
-        <RecordHeader title="달성 개인 기록 관리" handleRecordDelete={handleRecordDelete} target="weekly">
-          <RecordTable records={data} date={date as Date} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} target="weekly" />
-        </RecordHeader>
-      </div>
-      <div className="select-team">
+    <>
+      <StyledTeamSelect>
         <p>팀 선택 : </p>
         <TeamSelect team={team} setTeam={(e) => setTeam(e.target.value as TeamType)} />
-      </div>
-      <MyCalendar handleDateClick={handleDateClick} setDate={setDate} date={date} dateRange={dateRange} />
-    </WeeklyStyle>
+      </StyledTeamSelect>
+      <RecordTableStyle>
+        {records.length === 0 ? (
+          <div>데이터가 없습니다</div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <td>삭제</td>
+                <td>선수</td>
+                <td>기록명</td>
+                <td>누적기록</td>
+                <td>잔여기록</td>
+                <td>비고</td>
+                <td>시상여부</td>
+                <td>달성완료</td>
+                <td>created_at</td>
+              </tr>
+            </thead>
+            <tbody>
+              {records.map((record) => (
+                <RecordRow key={record.id} record={record} />
+              ))}
+            </tbody>
+          </table>
+        )}
+      </RecordTableStyle>
+    </>
   );
 }

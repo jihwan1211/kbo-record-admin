@@ -7,8 +7,8 @@ export interface IWeeklyTeamRecord {
   accSum: string;
   remain: string;
   remark: number;
-  celebrate: boolean;
-  achieve: boolean;
+  isCelebrated: boolean;
+  isAchieved: boolean;
   createdAt: string;
   achievementDate: string | null;
 }

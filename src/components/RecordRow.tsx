@@ -3,32 +3,24 @@ import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
 import { IWeeklyPlayerRecord } from "@/models/WeeklyPlayerRecord";
 import Checkbox from "./Checkbox";
 import EditRecord from "./EditRecord";
-import { updateAchieve, updateCelebrate, updateIsFail } from "@/api/record.api";
+import { updateAchieve, updateCelebrate } from "@/api/record.api";
 import TeamSelect from "./TeamSelect";
 import useEditRecord from "../hooks/useEditRecord";
 import PlayerSearch from "./PlayerSearch";
 
 type Props = {
   record: IWeeklyTeamRecord | IWeeklyPlayerRecord;
-  date: Date;
-  setDeleteTargets: React.Dispatch<React.SetStateAction<number[]>>;
-  deleteTargets: number[];
-  target: "daily" | "weekly";
 };
 
-export default function RecordRow({ record, date, setDeleteTargets, deleteTargets, target }: Props) {
-  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, handleDeleteTarget, isDeleteChecked, setIsFail } = useEditRecord({
+export default function RecordRow({ record }: Props) {
+  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, setDeleteTargets, isDeleteChecked } = useEditRecord({
     record,
-    date,
-    setDeleteTargets,
-    deleteTargets,
-    target,
   });
 
   return (
     <RecordTrStyle key={record.id}>
       <td>
-        <input type="checkbox" checked={isDeleteChecked(record.id)} onChange={handleDeleteTarget} />
+        <input type="checkbox" checked={isDeleteChecked(record.id)} onChange={() => setDeleteTargets(record.id)} />
       </td>
       <td>
         {isEditing ? (
@@ -48,16 +40,11 @@ export default function RecordRow({ record, date, setDeleteTargets, deleteTarget
       <td>{isEditing ? <input name="remain" value={recordState.remain} onChange={(e) => handleInputChange(e)} /> : record.remain}</td>
       <td>{isEditing ? <input name="remark" value={recordState.remark} onChange={(e) => handleInputChange(e)} /> : `${record.remark}번째`}</td>
       <td>
-        <Checkbox stateProps={record.celebrate} setState={setCelebrate} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateCelebrate} target={target} />
+        <Checkbox stateProps={record.isCelebrated} setState={setCelebrate} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateCelebrate} />
       </td>
       <td>
-        <Checkbox stateProps={record.achieve} setState={setAchieve} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateAchieve} target={target} />
+        <Checkbox stateProps={record.isAchieved} setState={setAchieve} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateAchieve} />
       </td>
-      {"isFail" in record && record.isFail !== undefined && (
-        <td>
-          <Checkbox stateProps={record.isFail} setState={setIsFail} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateIsFail} target={target} />
-        </td>
-      )}
       <td>{isEditing ? <input type="date" name="createdAt" value={recordState.createdAt} onChange={(e) => handleInputChange(e)} /> : record.createdAt}</td>
       <EditRecord isEditing={isEditing} setIsEditing={setIsEditing} handleRecordChange={mutation.mutate} />
     </RecordTrStyle>

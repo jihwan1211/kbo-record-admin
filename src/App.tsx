@@ -14,6 +14,7 @@ import WeeklyPlayerNotAchieved from "./pages/WeeklyPlayerNotAchieved.tsx";
 import WeeklyPlayerAchieved from "./pages/WeeklyPlayerAchieved.tsx";
 import DailyNotAchieved from "./pages/DailyNotAchieved.tsx";
 import DailyAchieved from "./pages/DailyAchieved.tsx";
+import RecordLayout from "./layout/RecordLayout.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -37,7 +38,9 @@ const router = createBrowserRouter([
     path: "/weekly/team/achieved",
     element: (
       <Layout>
-        <WeeklyTeamAchieved />
+        <RecordLayout title="달성 팀 기록 관리">
+          <WeeklyTeamAchieved />
+        </RecordLayout>
       </Layout>
     ),
   },
@@ -45,7 +48,9 @@ const router = createBrowserRouter([
     path: "/weekly/team/not-achieved",
     element: (
       <Layout>
-        <WeeklyTeamNotAchieved />
+        <RecordLayout title="미달성 팀 기록 관리">
+          <WeeklyTeamNotAchieved />
+        </RecordLayout>
       </Layout>
     ),
   },
@@ -53,7 +58,9 @@ const router = createBrowserRouter([
     path: "/weekly/player/achieved",
     element: (
       <Layout>
-        <WeeklyPlayerAchieved />
+        <RecordLayout title="달성 개인 기록 관리">
+          <WeeklyPlayerAchieved />
+        </RecordLayout>
       </Layout>
     ),
   },
@@ -61,7 +68,9 @@ const router = createBrowserRouter([
     path: "/weekly/player/not-achieved",
     element: (
       <Layout>
-        <WeeklyPlayerNotAchieved />
+        <RecordLayout title="미달성 개인 기록 관리">
+          <WeeklyPlayerNotAchieved />
+        </RecordLayout>
       </Layout>
     ),
   },
@@ -69,7 +78,9 @@ const router = createBrowserRouter([
     path: "/daily/not-achieved",
     element: (
       <Layout>
-        <DailyNotAchieved />
+        <RecordLayout title="미달성 개인 기록 관리">
+          <DailyNotAchieved />
+        </RecordLayout>
       </Layout>
     ),
   },
@@ -77,7 +88,9 @@ const router = createBrowserRouter([
     path: "/daily/achieved",
     element: (
       <Layout>
-        <DailyAchieved />
+        <RecordLayout title="달성 개인 기록 관리">
+          <DailyAchieved />
+        </RecordLayout>
       </Layout>
     ),
   },
