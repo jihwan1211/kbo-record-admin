@@ -8,7 +8,7 @@ const useWeeklyTeamAchievedRecord = () => {
   const { date } = useDateStore();
   const { data } = useQuery({
     queryKey: ["weekly", "record", "team", dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), "ACHIEVED"],
-    queryFn: () => getWeeklyTeamRecord({ date: dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), isDone: true }),
+    queryFn: () => getWeeklyTeamRecord({ date: dayjs(getMondayDateOfWeek(date)).format("YYYY-MM-DD"), isAchieved: true }),
   });
 
   return { data };

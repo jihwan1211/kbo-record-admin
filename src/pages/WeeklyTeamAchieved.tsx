@@ -1,4 +1,4 @@
-import useWeeklyTeamAchievedRecord from "@/hooks/useQuery/useWeeklyTeamAchievedRecord";
+import useWeeklyTeamAchievedRecord from "@/hooks/api/useWeeklyTeamAchievedRecord";
 import { RecordTableStyle } from "./WeeklyTeamNotAchieved";
 import RecordRow from "@components/RecordRow";
 

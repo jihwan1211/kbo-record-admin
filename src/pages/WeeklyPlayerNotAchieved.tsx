@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import TeamSelect from "../components/TeamSelect";
 import { TeamType } from "../models/team";
-import useWeeklyPlayerNotAchievedRecord from "@/hooks/useQuery/useWeeklyPlayerNotAchievedRecord";
+import useWeeklyPlayerNotAchievedRecord from "@/hooks/api/useWeeklyPlayerNotAchievedRecord";
 import { RecordTableStyle } from "./WeeklyTeamNotAchieved";
 import RecordRow from "@components/RecordRow";
 
