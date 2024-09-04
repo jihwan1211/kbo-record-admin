@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function RecordRow({ record }: Props) {
-  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, setDeleteTargets, isDeleteChecked } = useEditRecord({
+  const { player, setPlayer, isEditing, recordState, setCelebrate, setAchieve, handleInputChange, mutate, setIsEditing, setDeleteTargets, isDeleteChecked } = useEditRecord({
     record,
   });
 
@@ -47,7 +47,7 @@ export default function RecordRow({ record }: Props) {
       </td>
       <td>{isEditing ? <input type="date" name="createdAt" value={recordState.createdAt} onChange={(e) => handleInputChange(e)} /> : record.createdAt}</td>
       <td>{isEditing ? <input type="date" name="achievementDate" value={recordState.achievementDate || undefined} onChange={(e) => handleInputChange(e)} /> : record.achievementDate}</td>
-      <EditRecord isEditing={isEditing} setIsEditing={setIsEditing} handleRecordChange={mutation.mutate} />
+      <EditRecord isEditing={isEditing} setIsEditing={setIsEditing} handleRecordChange={mutate} />
     </RecordTrStyle>
   );
 }

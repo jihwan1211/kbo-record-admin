@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
+import { IWeeklyTeamRecord } from "../../models/WeeklyTeamRecords";
 import { IWeeklyPlayerRecord } from "@/models/WeeklyPlayerRecord";
-import RecordRow from "./RecordRow";
+import RecordRow from "../RecordRow";
 
 export type WeekRecordTableProps = {
   records: IWeeklyTeamRecord[] | IWeeklyPlayerRecord[];
@@ -10,7 +10,7 @@ export type WeekRecordTableProps = {
   target: "daily" | "weekly";
 };
 
-export default function RecordTable({ records, deleteTargets, setDeleteTargets, target }: WeekRecordTableProps) {
+export default function RecordTable({ records }: WeekRecordTableProps) {
   if (!records.length) return <p>저장된 기록이 없습니다.</p>;
   return (
     <RecordTableStyle>
@@ -30,7 +30,7 @@ export default function RecordTable({ records, deleteTargets, setDeleteTargets, 
         </thead>
         <tbody>
           {records.map((record) => (
-            <RecordRow key={record.id} record={record} setDeleteTargets={setDeleteTargets} deleteTargets={deleteTargets} target={target} />
+            <RecordRow key={record.id} record={record} />
           ))}
         </tbody>
       </table>

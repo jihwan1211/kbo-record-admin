@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
 import { IWeeklyPlayerRecord } from "@/models/WeeklyPlayerRecord";
 import dayjs from "dayjs";
-import { getMondayDateOfWeek } from "../lib/formatDate";
+import { getFormattedDate, getMondayDateOfWeek } from "../lib/formatDate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateRecord } from "@/api/record.api";
 import useToastStore from "../store/ToastStore";
@@ -29,15 +29,13 @@ const useEditRecord = ({ record }: Props) => {
   const { addToast } = useToastStore();
   const location = useLocation();
 
-  const handleInputChange = (e: any) => {
-    let { name, value } = e.target;
-
-    if (name == "remark") value = Number(value);
-    else if (name == "createdAt") value = target === "weekly" ? dayjs(getMondayDateOfWeek(value)).format("YYYY-MM-DD") : dayjs(value).format("YYYY-MM-DD");
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    const updatedValue = name === "remark" ? Number(value) : name === "createdAt" ? getFormattedDate(target, value) : value;
 
     setRecordState((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
@@ -55,14 +53,14 @@ const useEditRecord = ({ record }: Props) => {
     queryClient.invalidateQueries({ queryKey });
   };
 
-  const mutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async () => {
       if ("playerId" in recordState) {
         const data: IWeeklyPlayerRecord = { id: record.id, isCelebrated, isAchieved, ...recordState, playerId: recordState.playerId as number } as IWeeklyPlayerRecord;
-        return updateRecord({ data, target, mode });
+        return updateRecord(data, target, mode);
       } else {
         const data: IWeeklyTeamRecord = { id: record.id, isCelebrated, isAchieved, ...recordState };
-        return updateRecord({ data, target, mode });
+        return updateRecord(data, target, mode);
       }
     },
     onSuccess: (_response) => {
@@ -75,7 +73,7 @@ const useEditRecord = ({ record }: Props) => {
     },
   });
 
-  return { player, setPlayer, isEditing, recordState, isCelebrated, isAchieved, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, setDeleteTargets, isDeleteChecked };
+  return { player, setPlayer, isEditing, recordState, isCelebrated, isAchieved, setCelebrate, setAchieve, handleInputChange, mutate, setIsEditing, setDeleteTargets, isDeleteChecked };
 };
 
 export default useEditRecord;

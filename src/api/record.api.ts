@@ -2,6 +2,7 @@ import { httpClient } from "./http";
 import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
 import { TeamType } from "../models/team";
 import { IWeeklyPlayerRecord } from "../models/WeeklyPlayerRecord";
+import { PlayerRecordDto } from "@/hooks/api/usePostPlayerRecord";
 
 export const getWeeklyTeamRecord = async ({ date, isAchieved }: { date: string; isAchieved: boolean }) => {
   const response = await httpClient.get<IWeeklyTeamRecord[]>(`/api/admin/weekly/team?date=${date}&isAchieved=${isAchieved}`);
@@ -32,7 +33,7 @@ export const updateIsFail = async ({ id, flag }: { id: number; flag: boolean }) 
   return response;
 };
 
-export const updateRecord = async ({ data, target, mode }: { data: IWeeklyTeamRecord | IWeeklyPlayerRecord; target: "weekly" | "daily"; mode?: "team" | "player" }) => {
+export const updateRecord = async (data: IWeeklyTeamRecord | IWeeklyPlayerRecord, target: "weekly" | "daily", mode?: "team" | "player") => {
   const url = `/api/admin/record?t=${target}${mode ? `&m=${mode}` : ""}`;
   const response = await httpClient.put(url, data);
   return response;
@@ -59,7 +60,7 @@ export const getWeeklyPlayerRecord = async ({ date, isAchieved, team }: { date: 
   return response.data;
 };
 
-export const postNewPlayerRecord = async ({ data, target }: { data: Omit<IWeeklyPlayerRecord, "id" | "player" | "uniformNumber" | "team">; target: "weekly" | "daily" }) => {
+export const postNewPlayerRecord = async (data: PlayerRecordDto, target: "weekly" | "daily") => {
   const response = await httpClient.post(`/api/admin/player/record?t=${target}`, data);
   return response;
 };

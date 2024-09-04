@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getWeeklyTeamRecord } from "../../api/record.api";
+import { getWeeklyTeamRecord } from "../../../api/record.api";
 import dayjs from "dayjs";
 import useDateStore from "@/store/DateStore";
 import { getMondayDateOfWeek } from "@/lib/formatDate";

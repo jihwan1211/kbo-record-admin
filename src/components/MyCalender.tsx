@@ -4,7 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { getWeekRange } from "../lib/formatDate";
-import { DateValue } from "@/hooks/useWeekCalendar";
+import { DateValue } from "@/store/DateStore";
 import { compareDate } from "../lib/formatDate";
 
 dayjs.extend(weekOfYear);
@@ -39,7 +39,7 @@ export default function MyCalendar({ handleDateClick, setDate, date, dateRange }
       tileClassName={getTileClassName}
       showWeekNumbers={true}
       maxDate={new Date(getWeekRange(new Date())[1])}
-      formatDay={(locale, date) => date.toLocaleString("en", { day: "numeric" })}
+      formatDay={(_locale, date) => date.toLocaleString("en", { day: "numeric" })}
     />
   );
 }

@@ -8,13 +8,6 @@ const subtractDate = (date: DateValue, days: number) => {
     .format("YYYY-MM-DD");
 };
 
-// 날짜를 더하는 함수
-const addDate = (date: DateValue, days: number) => {
-  return dayjs(date as Date)
-    .add(days, "day")
-    .format("YYYY-MM-DD");
-};
-
 export const getWeekRange = (date: DateValue) => {
   const mondayDateOfWeek = dayjs(date as Date)
     .startOf("week")
@@ -40,4 +33,9 @@ export const compareDate = (selectedDate: Date, dateRange: string[]) => {
   const date = dayjs(selectedDate).startOf("day");
   if (date.isSame(fromDate) || date.isSame(toDate) || (date.isAfter(fromDate) && date.isBefore(toDate))) return true;
   else return false;
+};
+
+export const getFormattedDate = (target: "weekly" | "daily", date: Date | string): string => {
+  const selectedDate = typeof date === "string" ? new Date(date) : date;
+  return target === "weekly" ? dayjs(getMondayDateOfWeek(selectedDate)).format("YYYY-MM-DD") : dayjs(selectedDate).format("YYYY-MM-DD");
 };

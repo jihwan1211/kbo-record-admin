@@ -2,7 +2,7 @@ import { RecordTableStyle } from "./WeeklyTeamNotAchieved";
 import { useState } from "react";
 import { TeamType } from "@/models/team";
 import TeamSelect from "@components/TeamSelect";
-import useDailyAchievedRecord from "@/hooks/useQuery/useDailyAchievedRecord";
+import useDailyAchievedRecord from "@/hooks/api/daily-records/useDailyAchievedRecord";
 import { StyledTeamSelect } from "./WeeklyPlayerNotAchieved";
 import RecordRow from "@components/RecordRow";
 

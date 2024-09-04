@@ -1,10 +1,12 @@
-import { useState, FormEventHandler } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, FormEventHandler, ChangeEvent } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { postNewWeeklyTeamRecord } from "../api/record.api";
 import useToastStore from "../store/ToastStore";
 import { getMondayDateOfWeek } from "../lib/formatDate";
 import { IWeeklyTeamRecord } from "../models/WeeklyTeamRecords";
+import { usePostTeamRecord } from "./api/usePostTeamRecord";
+
+const getDefaultCreatedAt = () => dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD");
 
 const useAddTeamRecord = (onClose: () => void) => {
   const queryClient = useQueryClient();
@@ -14,43 +16,37 @@ const useAddTeamRecord = (onClose: () => void) => {
     accSum: "",
     remain: "",
     remark: 1,
-    createdAt: dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"),
+    createdAt: getDefaultCreatedAt(),
     achievementDate: null,
   });
   const [isCelebrated, setCelebrate] = useState(false);
   const { addToast } = useToastStore();
 
-  const handleNewRecordChange = (e: any) => {
-    let { name, value } = e.target;
-    if (name == "remark") value = Number(value);
-    else if (name == "createdAt") value = dayjs(getMondayDateOfWeek(value)).format("YYYY-MM-DD");
+  const handleNewRecordChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setNewRecord((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: name === "remark" ? Number(value) : name === "createdAt" ? dayjs(getMondayDateOfWeek(new Date(value))).format("YYYY-MM-DD") : value,
     }));
   };
 
-  const { mutate } = useMutation({
-    mutationFn: async () =>
-      postNewWeeklyTeamRecord({
-        ...newRecord,
-        isCelebrated,
-        isAchieved: false,
-      }),
-    onError: (error) => {
-      addToast({ message: `${error}, 팀 기록 저장에 실패하였습니다.`, type: "error" });
-    },
-  });
+  const { mutate } = usePostTeamRecord(
+    { ...newRecord, isCelebrated, isAchieved: false },
+    {
+      onSuccess: () => {
+        addToast({ message: "팀 기록 저장에 성공하였습니다.", type: "info" });
+        queryClient.invalidateQueries({ queryKey: ["weekly", "record", "team", getDefaultCreatedAt(), "NOT-ACHIEVED"] });
+        onClose();
+      },
+      onError: (error) => {
+        addToast({ message: `${error}, 팀 기록 저장에 실패하였습니다.`, type: "error" });
+      },
+    }
+  );
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    mutate(undefined, {
-      onSuccess: () => {
-        addToast({ message: "팀 기록 저장에 성공하였습니다.", type: "info" });
-        queryClient.invalidateQueries({ queryKey: ["weekly", "record", "team", dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD"), "NOT-ACHIEVED"] });
-        onClose();
-      },
-    });
+    mutate();
   };
 
   return { newRecord, handleNewRecordChange, isCelebrated, setCelebrate, handleSubmit };

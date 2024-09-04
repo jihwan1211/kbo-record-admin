@@ -1,5 +1,3 @@
-import styled from "styled-components";
-
 type Props = {
   isEditing: boolean;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,5 +18,3 @@ export default function EditRecord({ isEditing, setIsEditing, handleRecordChange
     </td>
   );
 }
-
-const EditRecordStyle = styled.div``;

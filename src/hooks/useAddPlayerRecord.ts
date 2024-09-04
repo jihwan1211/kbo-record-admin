@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { postNewPlayerRecord } from "../api/record.api";
 import useToastStore from "../store/ToastStore";
 import { getMondayDateOfWeek } from "../lib/formatDate";
 import { TPlayer } from "../models/WeeklyPlayerRecord";
 import { FormEventHandler } from "react";
 import { useLocation } from "react-router-dom";
+import { usePostPlayerRecord } from "./api/usePostPlayerRecord";
+import { getFormattedDate } from "../lib/formatDate";
 
 type Props = {
   onClose: () => void;
@@ -29,7 +30,7 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
     accSum: "",
     remain: "",
     remark: 1,
-    createdAt: target === "weekly" ? dayjs(getMondayDateOfWeek(new Date())).format("YYYY-MM-DD") : dayjs(new Date()).format("YYYY-MM-DD"),
+    createdAt: getFormattedDate(target, new Date()),
     achievementDate: null,
   });
   const [player, setPlayer] = useState<TPlayer | null>(null);
@@ -37,14 +38,13 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
   const { addToast } = useToastStore();
   const location = useLocation();
 
-  const handleNewRecordChange = (e: any) => {
-    let { name, value } = e.target;
-    if (name == "remark") value = Number(value);
-    else if (name == "createdAt") value = target === "weekly" ? dayjs(getMondayDateOfWeek(value)).format("YYYY-MM-DD") : dayjs(value).format("YYYY-MM-DD");
+  const handleNewRecordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const updatedValue = name === "remark" ? Number(value) : name === "createdAt" ? getFormattedDate(target, value) : value;
 
     setNewRecord((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
@@ -58,18 +58,12 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
     queryClient.invalidateQueries({ queryKey });
   };
 
-  const { mutate } = useMutation({
-    mutationFn: async () =>
-      postNewPlayerRecord({
-        data: {
-          playerId: player?.id as number,
-          ...newRecord,
-          isCelebrated,
-          isAchieved: false,
-          // isFail: false,
-        },
-        target,
-      }),
+  const { mutate } = usePostPlayerRecord({ playerId: player?.id as number, ...newRecord, isCelebrated, isAchieved: false }, target, {
+    onSuccess: () => {
+      addToast({ message: "선수 기록 저장에 성공하였습니다.", type: "info" });
+      invalidateQueries();
+      onClose();
+    },
     onError: (error) => {
       addToast({ message: `${error}, 선수 기록 저장에 실패하였습니다.`, type: "error" });
     },
@@ -82,13 +76,7 @@ const useAddPlayerRecord = ({ onClose, target }: Props) => {
       return;
     }
 
-    mutate(undefined, {
-      onSuccess: () => {
-        addToast({ message: "선수 기록 저장에 성공하였습니다.", type: "info" });
-        invalidateQueries();
-        onClose();
-      },
-    });
+    mutate();
   };
 
   return { newRecord, handleNewRecordChange, isCelebrated, setCelebrate, player, setPlayer, mutate, handleSubmit };

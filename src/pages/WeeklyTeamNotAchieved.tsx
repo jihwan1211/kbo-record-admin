@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import useWeeklyTeamNotAchievedRecord from "@/hooks/api/useWeeklyTeamNotAchievedRecord";
+import useWeeklyTeamNotAchievedRecord from "@/hooks/api/weekly-records/useWeeklyTeamNotAchievedRecord";
 import RecordRow from "@components/RecordRow";
 
 export default function WeeklyTeamNotAchieved() {
