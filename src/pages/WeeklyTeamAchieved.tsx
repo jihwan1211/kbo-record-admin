@@ -23,6 +23,7 @@ export default function WeeklyTeamAchieved() {
               <td>시상여부</td>
               <td>달성완료</td>
               <td>created_at</td>
+              <td>달성날짜</td>
             </tr>
           </thead>
           <tbody>

@@ -46,6 +46,7 @@ export default function RecordRow({ record }: Props) {
         <Checkbox stateProps={record.isAchieved} setState={setAchieve} recordId={record.id} mode={"playerId" in record ? "player" : "team"} apiFunction={updateAchieve} />
       </td>
       <td>{isEditing ? <input type="date" name="createdAt" value={recordState.createdAt} onChange={(e) => handleInputChange(e)} /> : record.createdAt}</td>
+      <td>{isEditing ? <input type="date" name="achievementDate" value={recordState.achievementDate || undefined} onChange={(e) => handleInputChange(e)} /> : record.achievementDate}</td>
       <EditRecord isEditing={isEditing} setIsEditing={setIsEditing} handleRecordChange={mutation.mutate} />
     </RecordTrStyle>
   );

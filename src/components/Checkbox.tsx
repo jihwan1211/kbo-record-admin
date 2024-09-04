@@ -20,7 +20,7 @@ export default function Checkbox({ stateProps, setState, recordId, mode, apiFunc
 
   const { mutate } = useMutation({
     mutationFn: async () => apiFunction({ mode, id: recordId, flag: !isboolean, target }),
-    onSuccess: (response) => {
+    onSuccess: (_response) => {
       addToast({ message: "기록 달성 여부 변경에 성공하였습니다.", type: "info" });
       setState(!isboolean);
       toggleIsBoolean();

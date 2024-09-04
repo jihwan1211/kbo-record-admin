@@ -21,10 +21,10 @@ const useEditRecord = ({ record }: Props) => {
   const { target, mode } = useTargetModeStore();
   const { date } = useDateStore();
   const { setDeleteTargets, deleteTargets } = useDeleteRecordStore();
-  const [recordState, setRecordState] = useState<Omit<IWeeklyTeamRecord, "id" | "achieve" | "celebrate">>({ ...record });
-  const [celebrate, setCelebrate] = useState(record.isCelebrated);
-  const [achieve, setAchieve] = useState(record.isAchieved);
-
+  const [recordState, setRecordState] = useState<Omit<IWeeklyTeamRecord, "id" | "isAchieved" | "isCelebrated">>({ ...record });
+  const [isCelebrated, setCelebrate] = useState(record.isCelebrated);
+  const [isAchieved, setAchieve] = useState(record.isAchieved);
+  console.log(recordState);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [player, setPlayer] = useState<TPlayer | null>(() => ("playerId" in record ? { id: record.playerId, player: record.player, team: record.team, uniformNumber: record.uniformNumber } : null));
   const { addToast } = useToastStore();
@@ -32,6 +32,7 @@ const useEditRecord = ({ record }: Props) => {
 
   const handleInputChange = (e: any) => {
     let { name, value } = e.target;
+
     if (name == "remark") value = Number(value);
     else if (name == "createdAt") value = target === "weekly" ? dayjs(getMondayDateOfWeek(value)).format("YYYY-MM-DD") : dayjs(value).format("YYYY-MM-DD");
 
@@ -58,10 +59,10 @@ const useEditRecord = ({ record }: Props) => {
   const mutation = useMutation({
     mutationFn: async () => {
       if ("playerId" in recordState) {
-        const data = { id: record.id, celebrate, achieve, ...recordState, playerId: player?.id };
+        const data: Omit<IWeeklyPlayerRecord, "player" | "uniformNumber" | "team"> = { id: record.id, isCelebrated, isAchieved, ...recordState, playerId: recordState.playerId as number };
         return updateRecord({ data, target, mode });
       } else {
-        const data = { id: record.id, celebrate, achieve, ...recordState };
+        const data: IWeeklyTeamRecord = { id: record.id, isCelebrated, isAchieved, ...recordState };
         return updateRecord({ data, target, mode });
       }
     },
@@ -75,7 +76,7 @@ const useEditRecord = ({ record }: Props) => {
     },
   });
 
-  return { player, setPlayer, isEditing, recordState, celebrate, achieve, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, setDeleteTargets, isDeleteChecked };
+  return { player, setPlayer, isEditing, recordState, isCelebrated, isAchieved, setCelebrate, setAchieve, handleInputChange, mutation, setIsEditing, setDeleteTargets, isDeleteChecked };
 };
 
 export default useEditRecord;

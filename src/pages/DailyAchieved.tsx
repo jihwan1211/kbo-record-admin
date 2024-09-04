@@ -2,9 +2,7 @@ import { RecordTableStyle } from "./WeeklyTeamNotAchieved";
 import { useState } from "react";
 import { TeamType } from "@/models/team";
 import TeamSelect from "@components/TeamSelect";
-
 import useDailyAchievedRecord from "@/hooks/useQuery/useDailyAchievedRecord";
-
 import { StyledTeamSelect } from "./WeeklyPlayerNotAchieved";
 import RecordRow from "@components/RecordRow";
 
@@ -34,6 +32,7 @@ export default function DailyAchieved() {
                 <td>시상여부</td>
                 <td>달성완료</td>
                 <td>created_at</td>
+                <td>달성날짜</td>
               </tr>
             </thead>
             <tbody>

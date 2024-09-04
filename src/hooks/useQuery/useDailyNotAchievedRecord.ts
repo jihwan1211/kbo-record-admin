@@ -8,7 +8,7 @@ const useDailyNotAchievedRecord = (team: TeamType) => {
   const { date } = useDateStore();
   const { data } = useQuery({
     queryKey: ["daily", "record", team, "player", dayjs(date as Date).format("YYYY-MM-DD"), "NOT-ACHIEVED"],
-    queryFn: () => getDailyRecords({ date: dayjs(date as Date).format("YYYY-MM-DD"), isDone: false, team: team }),
+    queryFn: () => getDailyRecords({ date: dayjs(date as Date).format("YYYY-MM-DD"), isAchieved: false, team: team }),
   });
   return { data };
 };
