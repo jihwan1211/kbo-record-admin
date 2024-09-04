@@ -32,15 +32,7 @@ export const updateIsFail = async ({ id, flag }: { id: number; flag: boolean }) 
   return response;
 };
 
-export const updateRecord = async ({
-  data,
-  target,
-  mode,
-}: {
-  data: IWeeklyTeamRecord | Omit<IWeeklyPlayerRecord, "player" | "uniformNumber" | "team">;
-  target: "weekly" | "daily";
-  mode?: "team" | "player";
-}) => {
+export const updateRecord = async ({ data, target, mode }: { data: IWeeklyTeamRecord | IWeeklyPlayerRecord; target: "weekly" | "daily"; mode?: "team" | "player" }) => {
   const url = `/api/admin/record?t=${target}${mode ? `&m=${mode}` : ""}`;
   const response = await httpClient.put(url, data);
   return response;
@@ -62,8 +54,8 @@ export const deleteRecords = async ({ data, target, mode }: { data: number[]; ta
   return response;
 };
 
-export const getWeeklyPlayerRecord = async ({ date, isDone, team }: { date: string; isDone: boolean; team: TeamType }) => {
-  const response = await httpClient.get<IWeeklyPlayerRecord[]>(`/api/admin/weekly/player/${team}?date=${date}&done=${isDone}`);
+export const getWeeklyPlayerRecord = async ({ date, isAchieved, team }: { date: string; isAchieved: boolean; team: TeamType }) => {
+  const response = await httpClient.get<IWeeklyPlayerRecord[]>(`/api/admin/weekly/player/${team}?date=${date}&isAchieved=${isAchieved}`);
   return response.data;
 };
 
