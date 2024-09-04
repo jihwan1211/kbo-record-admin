@@ -3,6 +3,8 @@ import RecordHeader from "@components/RecordHeader";
 import WeekCalendar from "@components/Calendar/WeekCalendar";
 import DayCalendar from "@components/Calendar/DayCalendar";
 import useTargetModeStore from "@/store/TargetModeStore";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 type Props = {
   children: React.ReactNode;
@@ -10,8 +12,17 @@ type Props = {
 };
 
 export default function RecordLayout({ children, title }: Props) {
-  const { target } = useTargetModeStore();
-  console.log("target : ", target);
+  const { target, setTargetModeState } = useTargetModeStore();
+  const location = useLocation();
+
+  useEffect(() => {
+    const locationArr = location.pathname.split("/");
+    let target = locationArr[1];
+    let mode = locationArr[2];
+    if (target === "daily") mode = "player";
+    setTargetModeState(target as "weekly" | "daily", mode as "team" | "player");
+  }, [location]);
+
   return (
     <WeeklyStyle>
       <div className="data">

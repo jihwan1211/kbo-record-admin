@@ -59,10 +59,10 @@ const useEditRecord = ({ record }: Props) => {
     mutationFn: async () => {
       if ("playerId" in recordState) {
         const data: IWeeklyPlayerRecord = { id: record.id, isCelebrated, isAchieved, ...recordState, playerId: recordState.playerId as number } as IWeeklyPlayerRecord;
-        return updateRecord({ data, target, mode: "player" });
+        return updateRecord({ data, target, mode });
       } else {
         const data: IWeeklyTeamRecord = { id: record.id, isCelebrated, isAchieved, ...recordState };
-        return updateRecord({ data, target, mode: "team" });
+        return updateRecord({ data, target, mode });
       }
     },
     onSuccess: (_response) => {
