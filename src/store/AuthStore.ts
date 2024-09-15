@@ -13,7 +13,6 @@ type Action = {
 
 export const getToken = () => {
   const accessToken = localStorage.getItem(TOKEN_KEY);
-  console.log(accessToken);
   return accessToken;
 };
 
