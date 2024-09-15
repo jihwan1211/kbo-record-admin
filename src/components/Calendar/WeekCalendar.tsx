@@ -4,7 +4,8 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
-import { compareDate, getMondayDateOfWeek, getWeekRange } from "@/lib/formatDate";
+// import { compareDate, getMondayDateOfWeek, getWeekRange } from "@/lib/formatDate";
+import { compareDate, getWeekRange } from "@/lib/formatDate";
 import useDateStore from "@/store/DateStore";
 
 dayjs.extend(weekOfYear);
@@ -17,13 +18,13 @@ type TileClassNameProps = {
 export default function WeekCalendar() {
   // week 달력 관련 상태
   const { date, setDate } = useDateStore();
-  const [mondayOfWeek, setMondayOfWeek] = useState(() => getMondayDateOfWeek(new Date()));
+  // const [mondayOfWeek, setMondayOfWeek] = useState(() => getMondayDateOfWeek(new Date()));
   const [dateRange, setDateRange] = useState<string[]>(() => getWeekRange(new Date()));
 
   // week 달력 관련 핸들러
   const handleDateClick = (date: Date) => {
     setDate(date);
-    setMondayOfWeek(getMondayDateOfWeek(date));
+    // setMondayOfWeek(getMondayDateOfWeek(date));
     setDateRange(getWeekRange(date));
   };
 
