@@ -15,6 +15,7 @@ import WeeklyPlayerAchieved from "./pages/WeeklyPlayerAchieved.tsx";
 import DailyNotAchieved from "./pages/DailyNotAchieved.tsx";
 import DailyAchieved from "./pages/DailyAchieved.tsx";
 import RecordLayout from "./layout/RecordLayout.tsx";
+import Join from "./pages/Join.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -31,6 +32,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <Login />
+      </Layout>
+    ),
+  },
+  {
+    path: "/join",
+    element: (
+      <Layout>
+        <Join />
       </Layout>
     ),
   },

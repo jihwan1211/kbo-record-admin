@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { getToken, removeToken } from "../store/AuthStore";
 
-const BASE_URL = "http://localhost:8888";
+// const BASE_URL = "https://admin.kbo-code.site";
+const BASE_URL = "http://localhost:8888/";
 
 const createClient = (config?: AxiosRequestConfig) => {
   const instance = axios.create({

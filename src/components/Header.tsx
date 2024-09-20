@@ -33,9 +33,14 @@ export default function Header({ isOpen, setIsOpen }: Props) {
           {isLoggedIn ? (
             <div onClick={() => showConfirm("로그아웃 하시겠습니까?", userLogout)}>로그아웃</div>
           ) : (
-            <Link to="/login" reloadDocument>
-              로그인
-            </Link>
+            <FlexBox>
+              <Link to="/login" reloadDocument>
+                로그인
+              </Link>
+              <Link to="/join" reloadDocument>
+                회원가입
+              </Link>
+            </FlexBox>
           )}
         </Dropdown>
       </div>
@@ -55,4 +60,11 @@ const HeaderStyle = styled.div`
   a {
     text-decoration: none;
   }
+`;
+
+const FlexBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
